@@ -1,5 +1,6 @@
 package com.example.edubridge
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,6 +87,9 @@ fun SignUpScreen(
                     val email = remember { mutableStateOf("") }
                     val password = remember { mutableStateOf("") }
                     val confirm = remember { mutableStateOf("") }
+                    val errorMsg = remember { mutableStateOf("") }
+                    val isLoading = remember { mutableStateOf(false) }
+                    val auth = FirebaseAuth.getInstance()
 
                     OutlinedTextField(
                         value = fullName.value,
@@ -91,7 +97,8 @@ fun SignUpScreen(
                         placeholder = { Text("Full Name") },
                         modifier = Modifier
                             .fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading.value
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
@@ -100,7 +107,8 @@ fun SignUpScreen(
                         placeholder = { Text("Email Address") },
                         modifier = Modifier
                             .fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading.value
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
@@ -109,7 +117,8 @@ fun SignUpScreen(
                         placeholder = { Text("Password") },
                         modifier = Modifier
                             .fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading.value
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
@@ -118,18 +127,65 @@ fun SignUpScreen(
                         placeholder = { Text("Confirm Password") },
                         modifier = Modifier
                             .fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading.value
                     )
+
+                    if (errorMsg.value.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = errorMsg.value, color = Color.Red, fontSize = 12.sp)
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* perform sign up */ onAuthSuccess() },
+                        onClick = {
+                            errorMsg.value = ""
+                            when {
+                                fullName.value.isEmpty() -> errorMsg.value = "Full name required"
+                                email.value.isEmpty() -> errorMsg.value = "Email required"
+                                password.value.isEmpty() -> errorMsg.value = "Password required"
+                                password.value != confirm.value -> errorMsg.value = "Passwords don't match"
+                                password.value.length < 6 -> errorMsg.value = "Password must be at least 6 characters"
+                                else -> {
+                                    isLoading.value = true
+                                    auth.createUserWithEmailAndPassword(email.value, password.value)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                val user = auth.currentUser
+                                                if (user != null) {
+                                                    val database = FirebaseDatabase.getInstance().reference
+                                                    val userMap = mapOf(
+                                                        "fullName" to fullName.value,
+                                                        "email" to email.value,
+                                                        "uid" to user.uid
+                                                    )
+                                                    database.child("users").child(user.uid).setValue(userMap)
+                                                        .addOnCompleteListener {
+                                                            isLoading.value = false
+                                                            onAuthSuccess()
+                                                        }
+                                                        .addOnFailureListener { e ->
+                                                            isLoading.value = false
+                                                            errorMsg.value = "Failed to save profile: ${e.message}"
+                                                            Log.e("SignUp", "Database error", e)
+                                                        }
+                                                }
+                                            } else {
+                                                isLoading.value = false
+                                                errorMsg.value = task.exception?.message ?: "Sign up failed"
+                                                Log.e("SignUp", "Auth failed", task.exception)
+                                            }
+                                        }
+                                }
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = !isLoading.value
                     ) {
-                        Text(text = "Create Account")
+                        Text(text = if (isLoading.value) "Creating..." else "Create Account")
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -177,13 +233,17 @@ fun LoginScreen(
 
                     val email = remember { mutableStateOf("") }
                     val password = remember { mutableStateOf("") }
+                    val errorMsg = remember { mutableStateOf("") }
+                    val isLoading = remember { mutableStateOf(false) }
+                    val auth = FirebaseAuth.getInstance()
 
                     OutlinedTextField(
                         value = email.value,
                         onValueChange = { email.value = it },
                         placeholder = { Text("Email Address") },
                         modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading.value
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
@@ -191,8 +251,14 @@ fun LoginScreen(
                         onValueChange = { password.value = it },
                         placeholder = { Text("Password") },
                         modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        singleLine = true,
+                        enabled = !isLoading.value
                     )
+
+                    if (errorMsg.value.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = errorMsg.value, color = Color.Red, fontSize = 12.sp)
+                    }
 
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -203,13 +269,34 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(6.dp))
                     Button(
-                        onClick = { /* login */ onAuthSuccess() },
+                        onClick = {
+                            errorMsg.value = ""
+                            when {
+                                email.value.isEmpty() -> errorMsg.value = "Email required"
+                                password.value.isEmpty() -> errorMsg.value = "Password required"
+                                else -> {
+                                    isLoading.value = true
+                                    auth.signInWithEmailAndPassword(email.value, password.value)
+                                        .addOnCompleteListener { task ->
+                                            isLoading.value = false
+                                            if (task.isSuccessful) {
+                                                Log.d("Login", "User logged in: ${auth.currentUser?.uid}")
+                                                onAuthSuccess()
+                                            } else {
+                                                errorMsg.value = task.exception?.message ?: "Login failed"
+                                                Log.e("Login", "Auth failed", task.exception)
+                                            }
+                                        }
+                                }
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = !isLoading.value
                     ) {
-                        Text(text = "Login")
+                        Text(text = if (isLoading.value) "Logging in..." else "Login")
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
