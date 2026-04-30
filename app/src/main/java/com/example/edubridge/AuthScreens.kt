@@ -2,6 +2,7 @@ package com.example.edubridge
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,13 +13,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,14 +50,38 @@ import com.example.edubridge.ui.theme.EduBridgeTheme
 @Composable
 private fun BrandHeader(modifier: Modifier = Modifier) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(color = BrandGreen)
+        Icon(
+            imageVector = Icons.Outlined.School,
+            contentDescription = "Logo",
+            tint = BrandGreen,
+            modifier = Modifier.size(32.dp)
         )
-        Spacer(modifier = Modifier.padding(6.dp))
-        Text(text = "EduBridge", color = BrandGreen, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+        Spacer(modifier = Modifier.padding(4.dp))
+        Text(text = "EduBridge", color = BrandGreen, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+    }
+}
+
+@Composable
+fun LabeledTextField(label: String, value: String, onValueChange: (String) -> Unit, placeholder: String, enabled: Boolean, rightLabel: @Composable (() -> Unit)? = null) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text(text = label, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+            rightLabel?.invoke()
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(placeholder, color = Color.Gray) },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            enabled = enabled,
+            shape = RoundedCornerShape(8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color(0xFFE2E8F0),
+                focusedBorderColor = BrandGreen
+            )
+        )
     }
 }
 
@@ -60,7 +92,7 @@ fun SignUpScreen(
     onToggleToLogin: () -> Unit = {},
     onAuthSuccess: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.fillMaxSize()) {
+    Surface(modifier = modifier.fillMaxSize(), color = BrandGreenLight) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -70,18 +102,18 @@ fun SignUpScreen(
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp)),
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     BrandHeader()
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(text = "Create an Account", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = "Join us to start your professional journey.", color = Color.Gray, fontSize = 14.sp)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(text = "Create an Account", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Join us to start your professional\njourney.", color = Color(0xFF475569), fontSize = 15.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     val fullName = remember { mutableStateOf("") }
                     val email = remember { mutableStateOf("") }
@@ -91,43 +123,35 @@ fun SignUpScreen(
                     val isLoading = remember { mutableStateOf(false) }
                     val auth = FirebaseAuth.getInstance()
 
-                    OutlinedTextField(
+                    LabeledTextField(
+                        label = "Full Name",
                         value = fullName.value,
                         onValueChange = { fullName.value = it },
-                        placeholder = { Text("Full Name") },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        singleLine = true,
+                        placeholder = "Jane Doe",
                         enabled = !isLoading.value
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LabeledTextField(
+                        label = "Email Address",
                         value = email.value,
                         onValueChange = { email.value = it },
-                        placeholder = { Text("Email Address") },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        singleLine = true,
+                        placeholder = "jane.doe@example.com",
                         enabled = !isLoading.value
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LabeledTextField(
+                        label = "Password",
                         value = password.value,
                         onValueChange = { password.value = it },
-                        placeholder = { Text("Password") },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        singleLine = true,
+                        placeholder = "••••••••",
                         enabled = !isLoading.value
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LabeledTextField(
+                        label = "Confirm Password",
                         value = confirm.value,
                         onValueChange = { confirm.value = it },
-                        placeholder = { Text("Confirm Password") },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        singleLine = true,
+                        placeholder = "••••••••",
                         enabled = !isLoading.value
                     )
 
@@ -183,17 +207,16 @@ fun SignUpScreen(
                             .fillMaxWidth()
                             .height(48.dp),
                         shape = RoundedCornerShape(8.dp),
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = BrandGreen),
                         enabled = !isLoading.value
                     ) {
-                        Text(text = if (isLoading.value) "Creating..." else "Create Account")
+                        Text(text = if (isLoading.value) "Creating..." else "Create Account", fontSize = 16.sp)
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        Text(text = "Already have an account? ", color = Color.Gray)
-                        TextButton(onClick = onToggleToLogin) {
-                            Text(text = "Log in", color = BrandGreen)
-                        }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "Already have an account? ", color = Color(0xFF475569), fontSize = 15.sp)
+                        Text(text = "Log in", color = BrandGreen, fontWeight = FontWeight.Medium, fontSize = 15.sp, modifier = Modifier.clickable { onToggleToLogin() })
                     }
                 }
             }
@@ -208,7 +231,7 @@ fun LoginScreen(
     onToggleToSignUp: () -> Unit = {},
     onAuthSuccess: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.fillMaxSize()) {
+    Surface(modifier = modifier.fillMaxSize(), color = BrandGreenLight) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -218,18 +241,18 @@ fun LoginScreen(
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp)),
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     BrandHeader()
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(text = "Welcome back", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(text = "Please enter your credentials to access your courses.", color = Color.Gray, fontSize = 14.sp)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(text = "Welcome back", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "Please enter your credentials to access\nyour courses.", color = Color(0xFF475569), fontSize = 15.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     val email = remember { mutableStateOf("") }
                     val password = remember { mutableStateOf("") }
@@ -237,22 +260,23 @@ fun LoginScreen(
                     val isLoading = remember { mutableStateOf(false) }
                     val auth = FirebaseAuth.getInstance()
 
-                    OutlinedTextField(
+                    LabeledTextField(
+                        label = "Email Address",
                         value = email.value,
                         onValueChange = { email.value = it },
-                        placeholder = { Text("Email Address") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
+                        placeholder = "student@example.com",
                         enabled = !isLoading.value
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LabeledTextField(
+                        label = "Password",
                         value = password.value,
                         onValueChange = { password.value = it },
-                        placeholder = { Text("Password") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        enabled = !isLoading.value
+                        placeholder = "••••••••",
+                        enabled = !isLoading.value,
+                        rightLabel = {
+                            Text(text = "Forgot Password?", color = BrandGreen, fontWeight = FontWeight.Medium, fontSize = 14.sp, modifier = Modifier.clickable { /* forgot */ })
+                        }
                     )
 
                     if (errorMsg.value.isNotEmpty()) {
@@ -260,14 +284,7 @@ fun LoginScreen(
                         Text(text = errorMsg.value, color = Color.Red, fontSize = 12.sp)
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                        TextButton(onClick = { /* forgot */ }) {
-                            Text(text = "Forgot Password?", color = BrandGreen)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                     Button(
                         onClick = {
                             errorMsg.value = ""
@@ -294,17 +311,24 @@ fun LoginScreen(
                             .fillMaxWidth()
                             .height(48.dp),
                         shape = RoundedCornerShape(8.dp),
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = BrandGreen),
                         enabled = !isLoading.value
                     ) {
-                        Text(text = if (isLoading.value) "Logging in..." else "Login")
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = if (isLoading.value) "Logging in..." else "Login", fontSize = 16.sp)
+                            if (!isLoading.value) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
+                            }
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Divider(color = Color(0xFFE2E8F0), thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(20.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        Text(text = "Don't have an account? ", color = Color.Gray)
-                        TextButton(onClick = onToggleToSignUp) {
-                            Text(text = "Sign up", color = BrandGreen)
-                        }
+                        Text(text = "Don't have an account? ", color = Color(0xFF475569), fontSize = 15.sp)
+                        Text(text = "Sign up", color = BrandGreen, fontWeight = FontWeight.Medium, fontSize = 15.sp, modifier = Modifier.clickable { onToggleToSignUp() })
                     }
                 }
             }
@@ -327,5 +351,3 @@ fun PreviewLogin() {
         LoginScreen()
     }
 }
-
-

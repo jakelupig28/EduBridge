@@ -12,6 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.WorkspacePremium
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,15 +43,9 @@ fun TopBrandBar(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier.size(24.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Box(modifier = Modifier.height(2.dp).fillMaxWidth().background(Color(0xFF334155)))
-                Box(modifier = Modifier.height(2.dp).fillMaxWidth(0.8f).background(Color(0xFF334155)))
-                Box(modifier = Modifier.height(2.dp).fillMaxWidth(0.6f).background(Color(0xFF334155)))
-            }
-        }
-        Text(text = "EduBridge", color = BrandGreen, fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
-        Box(modifier = Modifier.size(24.dp).clip(CircleShape).background(Color(0xFFF0F3F5)))
+        Icon(imageVector = Icons.Outlined.Menu, contentDescription = "Menu", tint = BrandGreen, modifier = Modifier.size(24.dp))
+        Text(text = "EduBridge", color = BrandGreen, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search", tint = BrandGreen, modifier = Modifier.size(24.dp))
     }
 }
 
@@ -55,23 +58,22 @@ fun BottomNavBar(selected: String, onSelect: (String) -> Unit = {}) {
             .padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        BottomNavItem("Home", selected == "Home", onSelect)
-        BottomNavItem("Courses", selected == "Courses", onSelect)
-        BottomNavItem("Progress", selected == "Progress", onSelect)
-        BottomNavItem("Certificates", selected == "Certificates", onSelect)
-        BottomNavItem("Profile", selected == "Profile", onSelect)
+        BottomNavItem("Home", Icons.Outlined.Home, selected == "Home", onSelect)
+        BottomNavItem("Courses", Icons.Outlined.School, selected == "Courses", onSelect)
+        BottomNavItem("Progress", Icons.Outlined.BarChart, selected == "Progress", onSelect)
+        BottomNavItem("Certificates", Icons.Outlined.WorkspacePremium, selected == "Certificates", onSelect)
+        BottomNavItem("Profile", Icons.Outlined.Person, selected == "Profile", onSelect)
     }
 }
 
 @Composable
-private fun BottomNavItem(label: String, selected: Boolean, onSelect: (String) -> Unit) {
+private fun BottomNavItem(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, selected: Boolean, onSelect: (String) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable { onSelect(label) }
     ) {
-        Box(modifier = Modifier.size(20.dp).clip(CircleShape).background(if (selected) BrandGreenLight else Color(0xFFEAEAEA)))
+        Icon(imageVector = icon, contentDescription = label, tint = if (selected) BrandGreen else Color.Gray, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = label, fontSize = 11.sp, color = if (selected) BrandGreen else Color.Gray)
     }
 }
-

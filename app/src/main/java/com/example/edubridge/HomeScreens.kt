@@ -18,9 +18,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.DirectionsCar
+import androidx.compose.material.icons.outlined.ElectricalServices
+import androidx.compose.material.icons.outlined.LaptopMac
+import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,17 +76,16 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                 Spacer(modifier = Modifier.height(12.dp))
                 // Search field placeholder
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE2E8F0))
                 ) {
-                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier
-                            .size(20.dp)
-                            .clip(CircleShape)
-                            .background(Color.LightGray))
+                    Row(modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search", tint = Color.Gray, modifier = Modifier.size(24.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Search for courses, skills...", color = Color.Gray)
+                        Text(text = "Search for courses, skills...", color = Color.Gray, fontSize = 15.sp)
                     }
                 }
             }
@@ -90,36 +98,42 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         // Image placeholder
                         Box(modifier = Modifier
                             .fillMaxWidth()
-                            .height(80.dp)
+                            .height(100.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFFcc9b2c)))
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Advanced TIG Welding Techniques", fontWeight = FontWeight.SemiBold)
-                        Spacer(modifier = Modifier.height(6.dp))
-                        // progress row
-                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier
-                                .height(8.dp)
-                                .fillMaxWidth(0.75f)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(Color.LightGray)) {
-                                Box(modifier = Modifier
-                                    .fillMaxHeight()
-                                    .fillMaxWidth(0.65f)
-                                    .background(BrandGreen))
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(text = "65%", color = Color.Gray)
-                        }
+                            .background(Color(0xFFCC7F2C)))
                         Spacer(modifier = Modifier.height(12.dp))
-                        Button(onClick = {}, modifier = Modifier.fillMaxWidth().height(44.dp), shape = RoundedCornerShape(10.dp)) {
-                            Text(text = "Resume")
+                        Box(modifier = Modifier.background(Color(0xFFE1E8FA), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                            Text(text = "Welding", color = Color(0xFF2C5282), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(text = "Advanced TIG Welding Techniques", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        // progress row
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = "Module 3: Shielding Gases", color = Color.Gray, fontSize = 13.sp)
+                            Text(text = "65%", color = Color.Gray, fontSize = 13.sp)
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Box(modifier = Modifier
+                            .height(8.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFFE2E8F0))) {
+                            Box(modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(0.65f)
+                                .background(BrandGreen))
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = {}, modifier = Modifier.fillMaxWidth().height(44.dp), shape = RoundedCornerShape(8.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = BrandGreen)) {
+                            Text(text = "Resume", fontWeight = FontWeight.Medium)
                         }
                     }
                 }
@@ -127,20 +141,18 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
 
             item {
                 Text(text = "Explore Categories", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-                Spacer(modifier = Modifier.height(8.dp))
-                                // categories grid (2x2)
-                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        CategoryCard("Electrical", modifier = Modifier.fillMaxWidth(0.5f))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        CategoryCard("Automotive", modifier = Modifier.fillMaxWidth(0.5f))
-                                    }
-                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        CategoryCard("Welding", modifier = Modifier.fillMaxWidth(0.5f))
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        CategoryCard("ICT", modifier = Modifier.fillMaxWidth(0.5f))
-                                    }
-                                }
+                Spacer(modifier = Modifier.height(12.dp))
+                // categories grid (2x2)
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        CategoryCard("Electrical", Color(0xFFE6F7EF), BrandGreen, Icons.Outlined.ElectricalServices, modifier = Modifier.weight(1f))
+                        CategoryCard("Automotive", Color(0xFFEBF8FF), Color(0xFF3182CE), Icons.Outlined.DirectionsCar, modifier = Modifier.weight(1f))
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        CategoryCard("Welding", Color(0xFFFFF5F5), Color(0xFFE53E3E), Icons.Outlined.Build, modifier = Modifier.weight(1f))
+                        CategoryCard("ICT", Color(0xFFE6FFFA), Color(0xFF319795), Icons.Outlined.LaptopMac, modifier = Modifier.weight(1f))
+                    }
+                }
             }
 
             item {
@@ -155,26 +167,29 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
             }
 
             item {
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
-        BottomNavBar(selected = "Home", onSelect = onSelectTab)
     }
 }
 
 @Composable
-fun CategoryCard(name: String, modifier: Modifier = Modifier) {
+fun CategoryCard(name: String, bgColor: Color, iconColor: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
     Card(modifier = modifier
-        .height(96.dp),
+        .height(100.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)) {
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Box(modifier = Modifier
-                .size(40.dp)
+                .size(44.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFe6f7ef)))
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = name, color = Color.Gray)
+                .background(bgColor), contentAlignment = Alignment.Center) {
+                Icon(imageVector = icon, contentDescription = name, tint = iconColor, modifier = Modifier.size(24.dp))
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(text = name, color = Color.Black, fontSize = 14.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -186,34 +201,51 @@ fun CourseCard(course: Course, onClick: () -> Unit = {}) {
         .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column {
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.DarkGray))
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(text = course.category, color = BrandGreen, modifier = Modifier.background(Color(0xFFEFF8F4)).padding(6.dp))
-                Text(text = course.level, color = Color.Gray, modifier = Modifier.background(Color(0xFFF0F0F0)).padding(6.dp))
+                .height(160.dp)
+                .background(Color.DarkGray)) {
+                // Top Right Badge
+                Card(modifier = Modifier.align(Alignment.TopEnd).padding(12.dp), shape = RoundedCornerShape(4.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                    Row(modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(imageVector = Icons.Filled.Star, contentDescription = "Rating", tint = Color(0xFFF6AD55), modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = course.rating.toString(), fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(text = course.title, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(text = "Learn the fundamentals of safe and effective residential wiring according to standard codes.", color = Color.Gray, fontSize = 13.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "12 Hours", color = Color.Gray)
-                Text(text = "Free", color = BrandGreen, fontWeight = FontWeight.SemiBold)
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(modifier = Modifier.background(Color(0xFFEFF8F4), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                        Text(text = course.category, color = BrandGreen, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    }
+                    Box(modifier = Modifier.background(Color(0xFFF1F5F9), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                        Text(text = course.level, color = Color(0xFF475569), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = course.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(text = "Learn the fundamentals of safe and effective residential electrical wiring according to standard codes.", color = Color(0xFF475569), fontSize = 13.sp, lineHeight = 18.sp)
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(imageVector = Icons.Outlined.Schedule, contentDescription = "Time", tint = Color(0xFF475569), modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = course.duration, color = Color(0xFF475569), fontSize = 13.sp)
+                    }
+                    Text(text = "Free", color = BrandGreen, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                }
             }
         }
     }
 }
 
 @Composable
-fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQuiz: () -> Unit = {}) {
+fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQuiz: () -> Unit = {}, onBack: () -> Unit = {}, onOpenLesson: (String) -> Unit = {}) {
     Box(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
         Column(modifier = Modifier.align(Alignment.TopStart)) {
             Box(modifier = Modifier
@@ -268,11 +300,11 @@ fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQui
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Course Curriculum", fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
-                ModuleCard("MODULE 1", "Foundations of Distributed Systems", "45 mins")
+                ModuleCard("MODULE 1", "Foundations of Distributed Systems", "45 mins", onClick = { onOpenLesson("Foundations of Distributed Systems") })
                 Spacer(modifier = Modifier.height(8.dp))
-                ModuleCard("MODULE 2", "Docker & Containerization Deep Dive", "1.5 hrs")
+                ModuleCard("MODULE 2", "Docker & Containerization Deep Dive", "1.5 hrs", onClick = { onOpenLesson("Docker & Containerization Deep Dive") })
                 Spacer(modifier = Modifier.height(8.dp))
-                ModuleCard("MODULE 3", "Kubernetes Architecture & Core Concepts", "2 hrs")
+                ModuleCard("MODULE 3", "Kubernetes Architecture & Core Concepts", "2 hrs", onClick = { onOpenLesson("Kubernetes Architecture & Core Concepts") })
             }
         }
 
@@ -291,8 +323,8 @@ fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQui
 }
 
 @Composable
-fun ModuleCard(tag: String, title: String, duration: String) {
-    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+fun ModuleCard(tag: String, title: String, duration: String, onClick: () -> Unit = {}) {
+    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), modifier = Modifier.clickable { onClick() }.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(text = tag, color = BrandGreen, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(6.dp))
@@ -329,4 +361,3 @@ fun PreviewCourseDetail() {
         CourseDetailScreen(course = Course("Cloud Native Architecture & Kubernetes Microservices", "ICT", "Advanced", "48 Hours"))
     }
 }
-
