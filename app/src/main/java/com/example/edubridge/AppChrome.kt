@@ -31,14 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
 
 @Composable
 fun TopBrandBar(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFF7F9FA))
+            .background(androidx.compose.material3.MaterialTheme.colorScheme.surface)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -54,23 +53,23 @@ fun BottomNavBar(selected: String, onSelect: (String) -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(androidx.compose.material3.MaterialTheme.colorScheme.surface)
             .padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        BottomNavItem("Home", Icons.Outlined.Home, selected == "Home", onSelect)
-        BottomNavItem("Courses", Icons.Outlined.School, selected == "Courses", onSelect)
-        BottomNavItem("Progress", Icons.Outlined.BarChart, selected == "Progress", onSelect)
-        BottomNavItem("Certificates", Icons.Outlined.WorkspacePremium, selected == "Certificates", onSelect)
-        BottomNavItem("Profile", Icons.Outlined.Person, selected == "Profile", onSelect)
+        BottomNavItem("Home", Icons.Outlined.Home, selected == "Home", onSelect, Modifier.weight(1f))
+        BottomNavItem("Courses", Icons.Outlined.School, selected == "Courses", onSelect, Modifier.weight(1f))
+        BottomNavItem("Progress", Icons.Outlined.BarChart, selected == "Progress", onSelect, Modifier.weight(1f))
+        BottomNavItem("Certificates", Icons.Outlined.WorkspacePremium, selected == "Certificates", onSelect, Modifier.weight(1f))
+        BottomNavItem("Profile", Icons.Outlined.Person, selected == "Profile", onSelect, Modifier.weight(1f))
     }
 }
 
 @Composable
-private fun BottomNavItem(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, selected: Boolean, onSelect: (String) -> Unit) {
+private fun BottomNavItem(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, selected: Boolean, onSelect: (String) -> Unit, modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onSelect(label) }
+        modifier = modifier.clickable { onSelect(label) }
     ) {
         Icon(imageVector = icon, contentDescription = label, tint = if (selected) BrandGreen else Color.Gray, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.height(4.dp))

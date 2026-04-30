@@ -46,7 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -121,7 +121,7 @@ fun SignUpScreen(
     onToggleToLogin: () -> Unit = {},
     onAuthSuccess: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = BrandGreenLight) {
+    Surface(modifier = modifier.fillMaxSize(), color = androidx.compose.material3.MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -133,7 +133,7 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -262,7 +262,7 @@ fun LoginScreen(
     onToggleToSignUp: () -> Unit = {},
     onAuthSuccess: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = BrandGreenLight) {
+    Surface(modifier = modifier.fillMaxSize(), color = androidx.compose.material3.MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -274,7 +274,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {

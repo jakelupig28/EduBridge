@@ -45,7 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
+
 import com.example.edubridge.ui.theme.EduBridgeTheme
 
 data class Course(
@@ -55,17 +55,18 @@ data class Course(
     val duration: String,
     val progress: Int = 0,
     val rating: Double = 4.8,
-    val image: ImageVector = Icons.Outlined.Build
+    val image: ImageVector? = null,
+    val imageRes: Int? = null
 )
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}, onSelectTab: (String) -> Unit = {}) {
     val featured = listOf(
-        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, image = Icons.Outlined.ElectricalServices),
-        Course("Network Administration Fundamentals", "ICT", "Intermediate", "24 Hours", rating = 4.9, image = Icons.Outlined.LaptopMac)
+        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, imageRes = R.drawable.wiring, image = Icons.Outlined.ElectricalServices),
+        Course("Automotive Diagnostics", "Automotive", "Intermediate", "24 Hours", rating = 4.9, imageRes = R.drawable.automotive, image = Icons.Outlined.DirectionsCar)
     )
 
-    Column(modifier = modifier.fillMaxSize().background(color = BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(color = androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         LazyColumn(
             modifier = Modifier
@@ -82,7 +83,7 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                 Card(
                     modifier = Modifier.fillMaxWidth().height(48.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                     border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE2E8F0))
                 ) {
@@ -101,26 +102,31 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                     modifier = Modifier
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         // Image representing the course
                         Box(modifier = Modifier
                             .fillMaxWidth()
-                            .height(100.dp)
+                            .height(140.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color(0xFFEFF8F4)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(imageVector = Icons.Outlined.Build, contentDescription = "Welding", modifier = Modifier.size(48.dp), tint = BrandGreen)
+                            Image(
+                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.plumbing),
+                                contentDescription = "Plumbing",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Box(modifier = Modifier.background(Color(0xFFE1E8FA), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
-                            Text(text = "Welding", color = Color(0xFF2C5282), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                            Text(text = "Plumbing", color = Color(0xFF2C5282), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                         }
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text(text = "Advanced TIG Welding Techniques", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                        Text(text = "Pipe Fitting Essentials", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                         Spacer(modifier = Modifier.height(8.dp))
                         // progress row
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -186,7 +192,7 @@ fun CategoryCard(name: String, bgColor: Color, iconColor: Color, icon: androidx.
     Card(modifier = modifier
         .height(100.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
@@ -208,7 +214,7 @@ fun CourseCard(course: Course, onClick: () -> Unit = {}) {
         .fillMaxWidth()
         .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
@@ -218,10 +224,19 @@ fun CourseCard(course: Course, onClick: () -> Unit = {}) {
                 .background(Color(0xFFEFF8F4)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = course.image, contentDescription = course.title, modifier = Modifier.size(64.dp), tint = BrandGreen)
+                if (course.imageRes != null) {
+                    Image(
+                        painter = androidx.compose.ui.res.painterResource(id = course.imageRes),
+                        contentDescription = course.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else if (course.image != null) {
+                    Icon(imageVector = course.image, contentDescription = course.title, modifier = Modifier.size(64.dp), tint = BrandGreen)
+                }
 
                 // Top Right Badge
-                Card(modifier = Modifier.align(Alignment.TopEnd).padding(12.dp), shape = RoundedCornerShape(4.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                Card(modifier = Modifier.align(Alignment.TopEnd).padding(12.dp), shape = RoundedCornerShape(4.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)) {
                     Row(modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(imageVector = Icons.Filled.Star, contentDescription = "Rating", tint = Color(0xFFF6AD55), modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
@@ -258,7 +273,7 @@ fun CourseCard(course: Course, onClick: () -> Unit = {}) {
 
 @Composable
 fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQuiz: () -> Unit = {}, onBack: () -> Unit = {}, onOpenLesson: (String) -> Unit = {}) {
-    Box(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Box(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         Column(modifier = Modifier.align(Alignment.TopStart)) {
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -266,7 +281,16 @@ fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQui
                 .background(Color(0xFFEFF8F4)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = course.image, contentDescription = course.title, modifier = Modifier.size(80.dp), tint = BrandGreen)
+                if (course.imageRes != null) {
+                    Image(
+                        painter = androidx.compose.ui.res.painterResource(id = course.imageRes),
+                        contentDescription = course.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else if (course.image != null) {
+                    Icon(imageVector = course.image, contentDescription = course.title, modifier = Modifier.size(80.dp), tint = BrandGreen)
+                }
             }
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -340,7 +364,7 @@ fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQui
 
 @Composable
 fun ModuleCard(tag: String, title: String, duration: String, onClick: () -> Unit = {}) {
-    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), modifier = Modifier.clickable { onClick() }.fillMaxWidth()) {
+    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), modifier = Modifier.clickable { onClick() }.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(text = tag, color = BrandGreen, fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(6.dp))
@@ -353,7 +377,7 @@ fun ModuleCard(tag: String, title: String, duration: String, onClick: () -> Unit
 
 @Composable
 fun MetricCard(title: String, value: String, modifier: Modifier = Modifier) {
-    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), modifier = modifier) {
+    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), modifier = modifier) {
         Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.Start) {
             Text(text = title, color = Color.Gray, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(6.dp))

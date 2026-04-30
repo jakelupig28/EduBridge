@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
+
 import com.example.edubridge.ui.theme.EduBridgeTheme
 
 data class Certificate(
@@ -52,7 +52,7 @@ fun CertificatesScreen(modifier: Modifier = Modifier, onSelect: (Certificate) ->
         Certificate("Cloud Infrastructure Basics", "Foundational knowledge of cloud computing, deployment models, and serverless architecture.", "Jan 18, 2023")
     )
 
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -88,7 +88,7 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
         NotificationItem("Platform Maintenance", "EduBridge will undergo scheduled maintenance this Sunday from 2 AM to 4 AM EST.", "3d ago", Color(0xFFD9D9D9), false)
     )
 
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
             Spacer(modifier = Modifier.height(12.dp))
@@ -112,7 +112,7 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
             Spacer(modifier = Modifier.height(12.dp))
@@ -130,7 +130,7 @@ fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = 
                     Card(
                         modifier = Modifier.fillMaxSize(),
                         shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                        colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)
                     ) {
                         Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Spacer(modifier = Modifier.height(8.dp))
@@ -187,7 +187,7 @@ private fun CertificateCard(certificate: Certificate, onView: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -230,13 +230,13 @@ private fun NotificationCard(item: NotificationItem) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = if (item.unread) Color.White else Color(0xFFE5ECE6))
+        colors = CardDefaults.cardColors(containerColor = if (item.unread) androidx.compose.material3.MaterialTheme.colorScheme.surface else Color(0xFFE5ECE6))
     ) {
         Row {
             Box(modifier = Modifier.width(4.dp).fillMaxHeight().background(if (item.unread) BrandGreen else Color.Transparent))
             Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
                 Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(item.color), contentAlignment = Alignment.Center) {
-                    Box(modifier = Modifier.size(18.dp).clip(RoundedCornerShape(4.dp)).background(Color.White))
+                    Box(modifier = Modifier.size(18.dp).clip(RoundedCornerShape(4.dp)).background(androidx.compose.material3.MaterialTheme.colorScheme.surface))
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {

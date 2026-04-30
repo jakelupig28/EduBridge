@@ -55,12 +55,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
+
 import com.example.edubridge.ui.theme.EduBridgeTheme
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    val auth = FirebaseAuth.getInstance()
+    val user = auth.currentUser
+    val displayName = user?.displayName?.takeIf { it.isNotBlank() } ?: "Sarah Jenkins"
+    val email = user?.email ?: "sarah.jenkins@example.com"
+
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         Column(modifier = Modifier.weight(1f).padding(horizontal = 24.dp)) {
             Spacer(modifier = Modifier.height(24.dp))
@@ -72,7 +78,7 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
                                 .fillMaxSize()
                                 .clip(CircleShape)
                                 .background(Color(0xFFE2E8F0))
-                                .border(3.dp, Color.White, CircleShape),
+                                .border(3.dp, androidx.compose.material3.MaterialTheme.colorScheme.surface, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(imageVector = Icons.Outlined.Person, contentDescription = "Profile", modifier = Modifier.size(64.dp), tint = Color.Gray)
@@ -82,17 +88,17 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
                                 .size(32.dp)
                                 .clip(CircleShape)
                                 .background(BrandGreen)
-                                .border(2.dp, Color.White, CircleShape)
+                                .border(2.dp, androidx.compose.material3.MaterialTheme.colorScheme.surface, CircleShape)
                                 .align(Alignment.BottomEnd),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit", tint = Color.White, modifier = Modifier.size(16.dp))
+                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit", tint = androidx.compose.material3.MaterialTheme.colorScheme.surface, modifier = Modifier.size(16.dp))
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Sarah Jenkins", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                    Text(text = displayName, fontWeight = FontWeight.Bold, fontSize = 24.sp)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "sarah.jenkins@example.com", color = Color(0xFF475569), fontSize = 15.sp)
+                    Text(text = email, color = Color(0xFF475569), fontSize = 15.sp)
                 }
             }
 
@@ -111,11 +117,14 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
 
             Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(
-                onClick = {},
+                onClick = { 
+                    auth.signOut() 
+                    // ideally we'd pass an onLogout callback up, but keeping it simple
+                },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDC2626)),
-                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = Color.White)
+                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout", tint = Color(0xFFDC2626), modifier = Modifier.size(20.dp))
@@ -129,14 +138,18 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
 }
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
-    val darkMode = remember { mutableStateOf(false) }
+fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}, isDarkMode: Boolean = false, onThemeChange: (Boolean) -> Unit = {}) {
+    val auth = FirebaseAuth.getInstance()
+    val user = auth.currentUser
+    val displayName = user?.displayName?.takeIf { it.isNotBlank() } ?: "Alex Mercer"
+    val email = user?.email ?: "alex.mercer@edubridge.edu"
 
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.surface)
+
                 .padding(horizontal = 16.dp, vertical = 20.dp)
                 .clickable { onBack() },
             verticalAlignment = Alignment.CenterVertically
@@ -149,7 +162,7 @@ fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
 
         Column(modifier = Modifier.weight(1f).padding(horizontal = 24.dp)) {
             Spacer(modifier = Modifier.height(24.dp))
-            Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(1.dp)) {
+            Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(1.dp)) {
                 Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier.size(64.dp).clip(CircleShape).background(Color(0xFFE2E8F0)),
@@ -159,9 +172,9 @@ fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
-                        Text(text = "Alex Mercer", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(text = displayName, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "alex.mercer@edubridge.edu", color = Color(0xFF475569), fontSize = 14.sp)
+                        Text(text = email, color = Color(0xFF475569), fontSize = 14.sp)
                     }
                 }
             }
@@ -185,7 +198,7 @@ fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
                     Icon(imageVector = Icons.Outlined.DarkMode, contentDescription = null, tint = BrandGreen, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(text = "Dark Mode", modifier = Modifier.weight(1f), fontSize = 16.sp)
-                    Switch(checked = darkMode.value, onCheckedChange = { darkMode.value = it })
+                    Switch(checked = isDarkMode, onCheckedChange = { onThemeChange(it) })
                 }
             }
 
@@ -198,15 +211,15 @@ fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
 
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = {},
+                onClick = { auth.signOut() },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout", tint = Color.White, modifier = Modifier.size(20.dp))
+                    Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout", tint = androidx.compose.material3.MaterialTheme.colorScheme.surface, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Logout", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                    Text(text = "Logout", color = androidx.compose.material3.MaterialTheme.colorScheme.surface, fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -216,7 +229,7 @@ fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
 
 @Composable
 fun CoursesEmptyScreen(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -250,7 +263,7 @@ fun CoursesEmptyScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun StatCard(modifier: Modifier = Modifier, icon: ImageVector, iconTint: Color, bgTint: Color, label: String, value: String) {
-    Card(modifier = modifier, shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(1.dp)) {
+    Card(modifier = modifier, shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(1.dp)) {
         Column(modifier = Modifier.padding(20.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(modifier = Modifier.size(56.dp).clip(CircleShape).background(bgTint), contentAlignment = Alignment.Center) {
                 Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(28.dp))
@@ -265,9 +278,9 @@ private fun StatCard(modifier: Modifier = Modifier, icon: ImageVector, iconTint:
 
 @Composable
 private fun ProfileRow(title: String, icon: ImageVector, onClick: () -> Unit = {}) {
-    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), modifier = Modifier.clickable { onClick() }, elevation = CardDefaults.cardElevation(1.dp)) {
+    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), modifier = Modifier.clickable { onClick() }, elevation = CardDefaults.cardElevation(1.dp)) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(BrandGreenLight), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(androidx.compose.material3.MaterialTheme.colorScheme.background), contentAlignment = Alignment.Center) {
                 Icon(imageVector = icon, contentDescription = null, tint = Color(0xFF475569), modifier = Modifier.size(20.dp))
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -279,7 +292,7 @@ private fun ProfileRow(title: String, icon: ImageVector, onClick: () -> Unit = {
 
 @Composable
 private fun SettingsCard(content: @Composable () -> Unit) {
-    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(1.dp)) {
+    Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(1.dp)) {
         Column { content() }
     }
 }

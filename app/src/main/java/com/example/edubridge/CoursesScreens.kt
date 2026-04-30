@@ -16,18 +16,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
+
 
 @Composable
 fun CourseCatalogScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}) {
     val courses = listOf(
-        Course("Advanced Commercial Wiring Techniques", "Electrical", "Advanced", "40 Hours", progress = 45),
-        Course("Modern EV Diagnostics & Repair", "Automotive", "Intermediate", "60 Hours", progress = 0),
-        Course("Residential Pipe Systems Fundamentals", "Plumbing", "Beginner", "32 Hours", progress = 0),
-        Course("Structural Framing Mastery", "Carpentry", "Advanced", "48 Hours", progress = 0)
+        Course("Advanced Commercial Wiring Techniques", "Electrical", "Advanced", "40 Hours", progress = 45, imageRes = R.drawable.wiring),
+        Course("Modern EV Diagnostics & Repair", "Automotive", "Intermediate", "60 Hours", progress = 0, imageRes = R.drawable.ev_diagnostic_course),
+        Course("Residential Pipe Systems Fundamentals", "Plumbing", "Beginner", "32 Hours", progress = 0, imageRes = R.drawable.pipe_course),
+        Course("Structural Framing Mastery", "Carpentry", "Advanced", "48 Hours", progress = 0, imageRes = R.drawable.framing_course)
     )
 
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Course Catalog", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
@@ -44,10 +44,10 @@ fun CourseCatalogScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) ->
                     leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(8.dp),
-                    colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = Color.White, focusedContainerColor = Color.White)
+                    colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface, focusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = {}, shape = RoundedCornerShape(8.dp), modifier = Modifier.size(50.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.White), elevation = ButtonDefaults.buttonElevation(2.dp)) {
+                Button(onClick = {}, shape = RoundedCornerShape(8.dp), modifier = Modifier.size(50.dp), colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = ButtonDefaults.buttonElevation(2.dp)) {
                     // Filter icon placeholder
                 }
             }
@@ -80,7 +80,7 @@ fun CourseCatalogScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) ->
 
 @Composable
 fun LessonScreen(lessonTitle: String, modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
-    Column(modifier = modifier.fillMaxSize().background(Color.White)) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.surface)) {
         Box(modifier = Modifier.fillMaxWidth().height(200.dp).background(Color.Black)) {
             // Video placeholder
         }
@@ -89,7 +89,7 @@ fun LessonScreen(lessonTitle: String, modifier: Modifier = Modifier, onBack: () 
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = lessonTitle, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
-            Card(colors = CardDefaults.cardColors(containerColor = BrandGreenLight), shape = RoundedCornerShape(8.dp)) {
+            Card(colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background), shape = RoundedCornerShape(8.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(text = "Core Concept", fontWeight = FontWeight.SemiBold)
                     Text(text = "Centralizing application state prevents prop-drilling.", fontSize = 14.sp)
@@ -109,4 +109,3 @@ fun LessonScreen(lessonTitle: String, modifier: Modifier = Modifier, onBack: () 
         }
     }
 }
-

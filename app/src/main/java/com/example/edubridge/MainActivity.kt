@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -19,9 +20,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            EduBridgeTheme {
+            val isSystemDark = isSystemInDarkTheme()
+            val isDarkMode = remember { mutableStateOf(isSystemDark) }
+
+            EduBridgeTheme(darkTheme = isDarkMode.value) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AuthHost(modifier = Modifier.padding(innerPadding))
+                    AuthHost(
+                        modifier = Modifier.padding(innerPadding),
+                        isDarkMode = isDarkMode.value,
+                        onThemeChange = { isDarkMode.value = it }
+                    )
                 }
             }
         }
@@ -29,7 +37,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AuthHost(modifier: Modifier = Modifier) {
+fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onThemeChange: (Boolean) -> Unit = {}) {
     val isLoginScreen = remember { mutableStateOf(true) }
     val loggedIn = remember { mutableStateOf(false) }
     val selectedCourse = remember { mutableStateOf<Course?>(null) }
@@ -77,7 +85,12 @@ fun AuthHost(modifier: Modifier = Modifier) {
                 }
 
                 showSettings.value -> {
-                    SettingsScreen(modifier = Modifier.fillMaxSize(), onBack = { showSettings.value = false })
+                    SettingsScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        onBack = { showSettings.value = false },
+                        isDarkMode = isDarkMode,
+                        onThemeChange = onThemeChange
+                    )
                 }
 
                 selectedCertificate.value != null -> {

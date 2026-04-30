@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edubridge.ui.theme.BrandGreen
-import com.example.edubridge.ui.theme.BrandGreenLight
+
 import com.example.edubridge.ui.theme.EduBridgeTheme
 
 data class Question(
@@ -56,7 +56,7 @@ fun QuizScreen(
     val currentIndex = indexState.value
     val current = questions[currentIndex]
 
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight).padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background).padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Question ${currentIndex + 1} of ${questions.size}", fontWeight = FontWeight.SemiBold)
@@ -64,7 +64,7 @@ fun QuizScreen(
                     Box(modifier = Modifier
                         .size(36.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White)) {
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.surface)) {
                         Text(text = "12:45", modifier = Modifier.align(Alignment.Center), color = Color.Black)
                     }
                 }
@@ -72,7 +72,7 @@ fun QuizScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
+            Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     // Category tag
                     Text(text = "SAFETY PROTOCOLS", color = BrandGreen, fontWeight = FontWeight.SemiBold)
@@ -91,7 +91,7 @@ fun QuizScreen(
                                     selected.value = idx
                                 },
                             shape = RoundedCornerShape(10.dp),
-                            colors = CardDefaults.cardColors(containerColor = if (isSelected) BrandGreenLight else Color.White),
+                            colors = CardDefaults.cardColors(containerColor = if (isSelected) androidx.compose.material3.MaterialTheme.colorScheme.background else androidx.compose.material3.MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
                             Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -100,7 +100,7 @@ fun QuizScreen(
                                     .clip(CircleShape)
                                     .background(if (isSelected) BrandGreen else Color.Transparent)
                                 ) {
-                                    Text(text = ('A' + idx).toString(), modifier = Modifier.align(Alignment.Center), color = if (isSelected) Color.White else BrandGreen)
+                                    Text(text = ('A' + idx).toString(), modifier = Modifier.align(Alignment.Center), color = if (isSelected) androidx.compose.material3.MaterialTheme.colorScheme.surface else BrandGreen)
                                 }
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(text = option)
@@ -110,7 +110,7 @@ fun QuizScreen(
                                         .size(24.dp)
                                         .clip(CircleShape)
                                         .background(BrandGreen)) {
-                                        Text(text = "✓", modifier = Modifier.align(Alignment.Center), color = Color.White)
+                                        Text(text = "✓", modifier = Modifier.align(Alignment.Center), color = androidx.compose.material3.MaterialTheme.colorScheme.surface)
                                     }
                                 }
                             }
@@ -141,8 +141,8 @@ fun QuizScreen(
 
 @Composable
 fun QuizResultScreen(modifier: Modifier = Modifier, percent: Int, correct: Int, total: Int, timeTaken: String, onContinue: () -> Unit = {}, onRetake: () -> Unit = {}) {
-    Column(modifier = modifier.fillMaxSize().background(BrandGreenLight).padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp), modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background).padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(defaultElevation = 6.dp), modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(modifier = Modifier.size(72.dp).clip(CircleShape).background(Color(0xFFEFF8F4)), contentAlignment = Alignment.Center) {
                     Text(text = "🏆", fontSize = 28.sp)
