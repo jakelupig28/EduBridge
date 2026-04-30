@@ -29,51 +29,55 @@ fun CourseCatalogScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) ->
 
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Course Catalog", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Explore and enroll in technical certifications.", color = Color(0xFF475569))
-            Spacer(modifier = Modifier.height(16.dp))
+        
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Course Catalog", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = "Explore and enroll in technical certifications.", color = Color(0xFF475569))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Search and Filter Bar
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    placeholder = { Text("Search courses...") },
-                    leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-                    modifier = Modifier.weight(1f).height(50.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface, focusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = {}, shape = RoundedCornerShape(8.dp), modifier = Modifier.size(50.dp), colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = ButtonDefaults.buttonElevation(2.dp)) {
-                    // Filter icon placeholder
+                // Search and Filter Bar
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = "",
+                        onValueChange = {},
+                        placeholder = { Text("Search courses...") },
+                        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface, focusedContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = {}, shape = RoundedCornerShape(8.dp), modifier = Modifier.size(50.dp), colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface), elevation = ButtonDefaults.buttonElevation(2.dp)) {
+                        // Filter icon placeholder
+                    }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Chips
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = BrandGreen)) {
+                        Text("All Courses")
+                    }
+                    Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE2E8F0), contentColor = Color.Black)) {
+                        Text("Electrical")
+                    }
+                    Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE2E8F0), contentColor = Color.Black)) {
+                        Text("Automotive")
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            Spacer(modifier = Modifier.height(16.dp))
 
-            // Chips
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = BrandGreen)) {
-                    Text("All Courses")
-                }
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE2E8F0), contentColor = Color.Black)) {
-                    Text("Electrical")
-                }
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE2E8F0), contentColor = Color.Black)) {
-                    Text("Automotive")
-                }
+            items(courses) { course ->
+                CourseCard(course = course, onClick = { onOpenCourse(course) })
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(courses) { course ->
-                    CourseCard(course = course, onClick = { onOpenCourse(course) })
-                }
-                item { Spacer(modifier = Modifier.height(24.dp)) }
-            }
+            item { Spacer(modifier = Modifier.height(24.dp)) }
         }
     }
 }
