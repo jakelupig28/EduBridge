@@ -31,7 +31,7 @@ fun CourseCatalogScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) ->
         TopBrandBar()
         
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+            modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
