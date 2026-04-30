@@ -37,6 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,14 +54,15 @@ data class Course(
     val level: String,
     val duration: String,
     val progress: Int = 0,
-    val rating: Double = 4.8
+    val rating: Double = 4.8,
+    val image: ImageVector = Icons.Outlined.Build
 )
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}, onSelectTab: (String) -> Unit = {}) {
     val featured = listOf(
-        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8),
-        Course("Network Administration Fundamentals", "ICT", "Intermediate", "24 Hours", rating = 4.9)
+        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, image = Icons.Outlined.ElectricalServices),
+        Course("Network Administration Fundamentals", "ICT", "Intermediate", "24 Hours", rating = 4.9, image = Icons.Outlined.LaptopMac)
     )
 
     Column(modifier = modifier.fillMaxSize().background(color = BrandGreenLight)) {
@@ -101,12 +105,16 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        // Image placeholder
+                        // Image representing the course
                         Box(modifier = Modifier
                             .fillMaxWidth()
                             .height(100.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFFCC7F2C)))
+                            .background(Color(0xFFEFF8F4)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(imageVector = Icons.Outlined.Build, contentDescription = "Welding", modifier = Modifier.size(48.dp), tint = BrandGreen)
+                        }
                         Spacer(modifier = Modifier.height(12.dp))
                         Box(modifier = Modifier.background(Color(0xFFE1E8FA), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
                             Text(text = "Welding", color = Color(0xFF2C5282), fontSize = 12.sp, fontWeight = FontWeight.Medium)
@@ -207,7 +215,11 @@ fun CourseCard(course: Course, onClick: () -> Unit = {}) {
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(160.dp)
-                .background(Color.DarkGray)) {
+                .background(Color(0xFFEFF8F4)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(imageVector = course.image, contentDescription = course.title, modifier = Modifier.size(64.dp), tint = BrandGreen)
+
                 // Top Right Badge
                 Card(modifier = Modifier.align(Alignment.TopEnd).padding(12.dp), shape = RoundedCornerShape(4.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
                     Row(modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -251,7 +263,11 @@ fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQui
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(220.dp)
-                .background(Color.LightGray))
+                .background(Color(0xFFEFF8F4)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(imageVector = course.image, contentDescription = course.title, modifier = Modifier.size(80.dp), tint = BrandGreen)
+            }
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(text = "Advanced", color = BrandGreen, modifier = Modifier.background(Color(0xFFEFF8F4)).padding(6.dp))

@@ -18,12 +18,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -40,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.edubridge.ui.theme.BrandGreen
 import com.example.edubridge.ui.theme.BrandGreenLight
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,7 +67,17 @@ private fun BrandHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LabeledTextField(label: String, value: String, onValueChange: (String) -> Unit, placeholder: String, enabled: Boolean, rightLabel: @Composable (() -> Unit)? = null) {
+fun LabeledTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    enabled: Boolean,
+    isPassword: Boolean = false,
+    rightLabel: @Composable (() -> Unit)? = null
+) {
+    val passwordVisible = remember { mutableStateOf(false) }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(text = label, fontWeight = FontWeight.Medium, fontSize = 14.sp)
@@ -76,6 +91,20 @@ fun LabeledTextField(label: String, value: String, onValueChange: (String) -> Un
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             enabled = enabled,
+            visualTransformation = if (isPassword && !passwordVisible.value) PasswordVisualTransformation() else VisualTransformation.None,
+            trailingIcon = if (isPassword) {
+                {
+                    val image = if (passwordVisible.value)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    val description = if (passwordVisible.value) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
+                        Icon(imageVector = image, contentDescription = description)
+                    }
+                }
+            } else null,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = Color(0xFFE2E8F0),
@@ -144,7 +173,8 @@ fun SignUpScreen(
                         value = password.value,
                         onValueChange = { password.value = it },
                         placeholder = "••••••••",
-                        enabled = !isLoading.value
+                        enabled = !isLoading.value,
+                        isPassword = true
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LabeledTextField(
@@ -152,7 +182,8 @@ fun SignUpScreen(
                         value = confirm.value,
                         onValueChange = { confirm.value = it },
                         placeholder = "••••••••",
-                        enabled = !isLoading.value
+                        enabled = !isLoading.value,
+                        isPassword = true
                     )
 
                     if (errorMsg.value.isNotEmpty()) {
@@ -274,6 +305,7 @@ fun LoginScreen(
                         onValueChange = { password.value = it },
                         placeholder = "••••••••",
                         enabled = !isLoading.value,
+                        isPassword = true,
                         rightLabel = {
                             Text(text = "Forgot Password?", color = BrandGreen, fontWeight = FontWeight.Medium, fontSize = 14.sp, modifier = Modifier.clickable { /* forgot */ })
                         }
