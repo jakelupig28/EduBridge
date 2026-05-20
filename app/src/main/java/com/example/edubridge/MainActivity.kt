@@ -50,6 +50,7 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
     val selectedCertificate = remember { mutableStateOf<Certificate?>(null) }
     val showSettings = remember { mutableStateOf(false) }
     val selectedLesson = remember { mutableStateOf<String?>(null) }
+    val selectedCategory = remember { mutableStateOf<String?>(null) }
 
     val sampleQuestions = listOf(
         com.example.edubridge.Question(
@@ -89,7 +90,12 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                         modifier = Modifier.fillMaxSize(),
                         onBack = { showSettings.value = false },
                         isDarkMode = isDarkMode,
-                        onThemeChange = onThemeChange
+                        onThemeChange = onThemeChange,
+                        onLogout = {
+                            loggedIn.value = false
+                            showSettings.value = false
+                            currentScreen.value = "Home"
+                        }
                     )
                 }
 
@@ -125,6 +131,15 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                     )
                 }
 
+                selectedCategory.value != null -> {
+                    CategoryDetailScreen(
+                        category = selectedCategory.value!!,
+                        modifier = Modifier.fillMaxSize(),
+                        onBack = { selectedCategory.value = null },
+                        onOpenCourse = { course -> selectedCourse.value = course }
+                    )
+                }
+
                 selectedCourse.value != null -> {
                     CourseDetailScreen(
                         course = selectedCourse.value!!,
@@ -136,7 +151,11 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 }
 
                 currentScreen.value == "Home" -> {
-                    HomeScreen(modifier = Modifier.fillMaxSize(), onOpenCourse = { course -> selectedCourse.value = course })
+                    HomeScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        onOpenCourse = { course -> selectedCourse.value = course },
+                        onCategorySelect = { category -> selectedCategory.value = category }
+                    )
                 }
 
                 currentScreen.value == "Courses" -> {
@@ -144,7 +163,7 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 }
 
                 currentScreen.value == "Progress" -> {
-                    NotificationsScreen(modifier = Modifier.fillMaxSize())
+                    ProgressScreen(modifier = Modifier.fillMaxSize())
                 }
 
                 currentScreen.value == "Certificates" -> {
@@ -152,7 +171,14 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 }
 
                 currentScreen.value == "Profile" -> {
-                    ProfileScreen(modifier = Modifier.fillMaxSize(), onSettings = { showSettings.value = true })
+                    ProfileScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        onSettings = { showSettings.value = true },
+                        onLogout = {
+                            loggedIn.value = false
+                            currentScreen.value = "Home"
+                        }
+                    )
                 }
 
                 else -> {
@@ -166,6 +192,7 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 currentScreen.value = tab
                 selectedCourse.value = null
                 selectedLesson.value = null
+                selectedCategory.value = null
                 selectedCertificate.value = null
                 showSettings.value = false
                 quizActive.value = false

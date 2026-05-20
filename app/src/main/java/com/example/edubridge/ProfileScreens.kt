@@ -42,6 +42,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -58,13 +61,26 @@ import com.example.edubridge.ui.theme.BrandGreen
 
 import com.example.edubridge.ui.theme.EduBridgeTheme
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
+fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}, onLogout: () -> Unit = {}) {
     val auth = FirebaseAuth.getInstance()
     val user = auth.currentUser
-    val displayName = user?.displayName?.takeIf { it.isNotBlank() } ?: "Sarah Jenkins"
+    
+    var displayName by remember { mutableStateOf(user?.displayName?.takeIf { it.isNotBlank() } ?: "Sarah Jenkins") }
     val email = user?.email ?: "sarah.jenkins@example.com"
+
+    LaunchedEffect(user?.uid) {
+        user?.uid?.let { uid ->
+            FirebaseDatabase.getInstance().reference.child("users").child(uid).get().addOnSuccessListener { snapshot ->
+                val name = snapshot.child("fullName").value as? String
+                if (!name.isNullOrBlank()) {
+                    displayName = name
+                }
+            }
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
@@ -119,7 +135,7 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
             OutlinedButton(
                 onClick = { 
                     auth.signOut() 
-                    // ideally we'd pass an onLogout callback up, but keeping it simple
+                    onLogout()
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
@@ -138,11 +154,23 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}) {
 }
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}, isDarkMode: Boolean = false, onThemeChange: (Boolean) -> Unit = {}) {
+fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}, isDarkMode: Boolean = false, onThemeChange: (Boolean) -> Unit = {}, onLogout: () -> Unit = {}) {
     val auth = FirebaseAuth.getInstance()
     val user = auth.currentUser
-    val displayName = user?.displayName?.takeIf { it.isNotBlank() } ?: "Alex Mercer"
+    
+    var displayName by remember { mutableStateOf(user?.displayName?.takeIf { it.isNotBlank() } ?: "Alex Mercer") }
     val email = user?.email ?: "alex.mercer@edubridge.edu"
+
+    LaunchedEffect(user?.uid) {
+        user?.uid?.let { uid ->
+            FirebaseDatabase.getInstance().reference.child("users").child(uid).get().addOnSuccessListener { snapshot ->
+                val name = snapshot.child("fullName").value as? String
+                if (!name.isNullOrBlank()) {
+                    displayName = name
+                }
+            }
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         Row(
@@ -211,7 +239,10 @@ fun SettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}, isDar
 
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = { auth.signOut() },
+                onClick = {
+                    auth.signOut()
+                    onLogout()
+                },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))

@@ -23,11 +23,24 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.filled.WorkspacePremium
+import androidx.compose.material.icons.outlined.MilitaryTech
+import androidx.compose.material.icons.outlined.WorkspacePremium
+import androidx.compose.material.icons.outlined.Verified
+import androidx.compose.material.icons.outlined.Stars
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,16 +53,18 @@ import com.example.edubridge.ui.theme.EduBridgeTheme
 data class Certificate(
     val title: String,
     val description: String,
-    val date: String
+    val date: String,
+    val icon: ImageVector,
+    val isPrimary: Boolean = false
 )
 
 @Composable
 fun CertificatesScreen(modifier: Modifier = Modifier, onSelect: (Certificate) -> Unit = {}, onSelectTab: (String) -> Unit = {}) {
     val certificates = listOf(
-        Certificate("Advanced Web Architecture", "Mastery in scalable system design, microservices, and modern frontend frameworks.", "Oct 24, 2023"),
-        Certificate("UI/UX Design Fundamentals", "Core principles of user-centered design, wireframing, and interactive prototyping.", "Aug 12, 2023"),
-        Certificate("Data Structures & Algorithms", "Comprehensive understanding of algorithmic efficiency and complex data structures.", "May 05, 2023"),
-        Certificate("Cloud Infrastructure Basics", "Foundational knowledge of cloud computing, deployment models, and serverless architecture.", "Jan 18, 2023")
+        Certificate("Advanced Web Architecture", "Mastery in scalable system design, microservices, and modern frontend frameworks.", "Oct 24, 2023", Icons.Outlined.WorkspacePremium, true),
+        Certificate("UI/UX Design Fundamentals", "Core principles of user-centered design, wireframing, and interactive prototyping.", "Aug 12, 2023", Icons.Outlined.MilitaryTech, false),
+        Certificate("Data Structures & Algorithms", "Comprehensive understanding of algorithmic efficiency and complex data structures.", "May 05, 2023", Icons.Outlined.Verified, false),
+        Certificate("Cloud Infrastructure Basics", "Foundational knowledge of cloud computing, deployment models, and serverless architecture.", "Jan 18, 2023", Icons.Outlined.Stars, false)
     )
 
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
@@ -61,12 +76,14 @@ fun CertificatesScreen(modifier: Modifier = Modifier, onSelect: (Certificate) ->
             item {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = "My Certificates", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Your verified technical skills and achievements. Download or share your certificates to showcase your expertise.",
-                    color = Color.Gray
+                    color = Color.DarkGray,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             items(certificates) { cert ->
@@ -117,53 +134,87 @@ fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = 
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
             Spacer(modifier = Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onBack() }) {
-                Text(text = "← Back to Certificates", color = BrandGreen)
+                Text(text = "← Back to Certificates", color = BrandGreen, fontWeight = FontWeight.Medium, fontSize = 14.sp)
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Card(
-                modifier = Modifier.fillMaxWidth().height(520.dp),
+                modifier = Modifier.fillMaxWidth().weight(1f),
                 shape = RoundedCornerShape(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE5ECE6))
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFE8EFE9))
             ) {
-                Box(modifier = Modifier.fillMaxSize().padding(12.dp)) {
+                Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
                     Card(
                         modifier = Modifier.fillMaxSize(),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = RoundedCornerShape(0.dp),
                         colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface)
                     ) {
-                        Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(Color(0xFFEFF8F4)))
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(text = "CERTIFICATE", fontWeight = FontWeight.ExtraBold)
-                            Text(text = "OF", fontWeight = FontWeight.ExtraBold)
-                            Text(text = "COMPLETION", fontWeight = FontWeight.ExtraBold)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(text = "THIS IS PROUDLY", color = Color.Gray, letterSpacing = 1.sp)
-                            Text(text = "PRESENTED TO", color = Color.Gray, letterSpacing = 1.sp)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(text = "Alex", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
-                            Text(text = "Rivera", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = "for successfully completing the rigorous academic requirements and demonstrating mastery in",
-                                color = Color.Gray,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(text = "Advanced Systems", fontWeight = FontWeight.ExtraBold)
-                            Text(text = "Architecture", fontWeight = FontWeight.ExtraBold)
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Column {
-                                    Text(text = "October 24,\n2023", textAlign = TextAlign.Center)
-                                    Text(text = "Date of Issuance", color = Color.Gray, fontSize = 12.sp)
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            // Corner Accents
+                            val stroke = 2.dp
+                            val length = 24.dp
+
+                            // Top Left
+                            Box(modifier = Modifier.align(Alignment.TopStart).padding(start = 16.dp, top = 16.dp)) {
+                                Box(modifier = Modifier.height(stroke).width(length).background(BrandGreen))
+                                Box(modifier = Modifier.width(stroke).height(length).background(BrandGreen))
+                            }
+                            // Top Right
+                            Box(modifier = Modifier.align(Alignment.TopEnd).padding(end = 16.dp, top = 16.dp)) {
+                                Box(modifier = Modifier.height(stroke).width(length).background(BrandGreen).align(Alignment.TopEnd))
+                                Box(modifier = Modifier.width(stroke).height(length).background(BrandGreen).align(Alignment.TopEnd))
+                            }
+                            // Bottom Left
+                            Box(modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 16.dp)) {
+                                Box(modifier = Modifier.height(stroke).width(length).background(BrandGreen).align(Alignment.BottomStart))
+                                Box(modifier = Modifier.width(stroke).height(length).background(BrandGreen).align(Alignment.BottomStart))
+                            }
+                            // Bottom Right
+                            Box(modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)) {
+                                Box(modifier = Modifier.height(stroke).width(length).background(BrandGreen).align(Alignment.BottomEnd))
+                                Box(modifier = Modifier.width(stroke).height(length).background(BrandGreen).align(Alignment.BottomEnd))
+                            }
+
+                            Column(modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                                Icon(imageVector = Icons.Filled.WorkspacePremium, contentDescription = null, tint = BrandGreen, modifier = Modifier.size(56.dp))
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Text(text = "CERTIFICATE", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, letterSpacing = 2.sp)
+                                Text(text = "OF", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, letterSpacing = 2.sp)
+                                Text(text = "COMPLETION", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, letterSpacing = 2.sp)
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Text(text = "THIS IS PROUDLY", color = Color.DarkGray, fontSize = 12.sp, letterSpacing = 1.sp)
+                                Text(text = "PRESENTED TO", color = Color.DarkGray, fontSize = 12.sp, letterSpacing = 1.sp)
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Text(text = "Alex", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
+                                Text(text = "Rivera", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Text(
+                                    text = "for successfully completing the rigorous academic requirements and demonstrating mastery in",
+                                    color = Color.DarkGray,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 12.sp,
+                                    lineHeight = 18.sp
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Text(text = "Advanced Systems", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+                                Text(text = "Architecture", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+
+                                Spacer(modifier = Modifier.weight(1f))
+                                Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFE5ECE6)))
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(text = "October 24,\n2023", textAlign = TextAlign.Center, fontSize = 12.sp, fontWeight = FontWeight.Bold, lineHeight = 16.sp)
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(text = "Date of Issuance", color = Color.DarkGray, fontSize = 10.sp, fontWeight = FontWeight.Medium)
+                                    }
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(text = "🖋️", color = Color.Gray, fontSize = 20.sp)
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(text = "Program Director", color = Color.DarkGray, fontSize = 10.sp, fontWeight = FontWeight.Medium)
+                                    }
                                 }
-                                Column(horizontalAlignment = Alignment.End) {
-                                    Text(text = "\u007e\u007e\u007e", color = Color.Gray)
-                                    Text(text = "Program Director", color = Color.Gray, fontSize = 12.sp)
-                                }
+                                Spacer(modifier = Modifier.height(16.dp))
                             }
                         }
                     }
@@ -171,13 +222,33 @@ fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = 
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {}, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(12.dp)) {
-                Text(text = "Download PDF")
+            Button(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = BrandGreen)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(imageVector = Icons.Outlined.Download, contentDescription = "Download", tint = Color.White, modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Download PDF", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                }
             }
             Spacer(modifier = Modifier.height(12.dp))
-            OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(12.dp)) {
-                Text(text = "Share to LinkedIn")
+            OutlinedButton(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, BrandGreen),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = BrandGreen)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(imageVector = Icons.Outlined.Share, contentDescription = "Share", tint = BrandGreen, modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Share to LinkedIn", color = BrandGreen, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                }
             }
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -186,29 +257,54 @@ fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = 
 private fun CertificateCard(certificate: Certificate, onView: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(Color(0xFFEFF8F4)))
-                Box(modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(Color(0xFFEFF4E6)).padding(horizontal = 10.dp, vertical = 4.dp)) {
-                    Text(text = certificate.date, fontSize = 12.sp)
+                Box(modifier = Modifier.size(44.dp).clip(CircleShape).background(Color(0xFFE8F3EE)), contentAlignment = Alignment.Center) {
+                    Icon(imageVector = certificate.icon, contentDescription = null, tint = BrandGreen, modifier = Modifier.size(24.dp))
+                }
+                Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(Color(0xFFE8F3EE)).padding(horizontal = 10.dp, vertical = 6.dp)) {
+                    Text(text = certificate.date, fontSize = 10.sp, color = Color.DarkGray, fontWeight = FontWeight.Bold)
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = certificate.title, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = certificate.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(6.dp))
-            Text(text = certificate.description, color = Color.Gray)
-            Spacer(modifier = Modifier.height(12.dp))
+            Text(text = certificate.description, color = Color.DarkGray, fontSize = 12.sp, lineHeight = 18.sp)
+            Spacer(modifier = Modifier.height(20.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Button(onClick = onView, modifier = Modifier.weight(1f).height(42.dp), shape = RoundedCornerShape(10.dp)) {
-                    Text(text = "View Certificate")
+                if (certificate.isPrimary) {
+                    Button(
+                        onClick = onView,
+                        modifier = Modifier.weight(1f).height(44.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandGreen)
+                    ) {
+                        Text(text = "View Certificate", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = onView,
+                        modifier = Modifier.weight(1f).height(44.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, BrandGreen),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = BrandGreen)
+                    ) {
+                        Text(text = "View Certificate", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.size(42.dp).clip(RoundedCornerShape(10.dp)).background(Color(0xFFEFF8F4)), contentAlignment = Alignment.Center) {
-                    Text(text = "↓", color = BrandGreen)
+                Spacer(modifier = Modifier.width(12.dp))
+                OutlinedButton(
+                    onClick = {},
+                    modifier = Modifier.size(44.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    border = BorderStroke(1.dp, Color(0xFFD1E8DF))
+                ) {
+                    Icon(imageVector = Icons.Outlined.Download, contentDescription = "Download", tint = BrandGreen, modifier = Modifier.size(20.dp))
                 }
             }
         }
@@ -275,5 +371,3 @@ fun PreviewCertificateDetail() {
         CertificateDetailScreen()
     }
 }
-
-

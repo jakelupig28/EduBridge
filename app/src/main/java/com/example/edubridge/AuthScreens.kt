@@ -33,9 +33,12 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import androidx.compose.ui.Alignment
@@ -262,6 +265,9 @@ fun LoginScreen(
     onToggleToSignUp: () -> Unit = {},
     onAuthSuccess: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val sharedPrefs = context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+
     Surface(modifier = modifier.fillMaxSize(), color = androidx.compose.material3.MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
@@ -285,8 +291,9 @@ fun LoginScreen(
                     Text(text = "Please enter your credentials to access\nyour courses.", color = Color(0xFF475569), fontSize = 15.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    val email = remember { mutableStateOf("") }
-                    val password = remember { mutableStateOf("") }
+                    val rememberMe = remember { mutableStateOf(sharedPrefs.getBoolean("remember_me", false)) }
+                    val email = remember { mutableStateOf(if (rememberMe.value) sharedPrefs.getString("email", "") ?: "" else "") }
+                    val password = remember { mutableStateOf(if (rememberMe.value) sharedPrefs.getString("password", "") ?: "" else "") }
                     val errorMsg = remember { mutableStateOf("") }
                     val isLoading = remember { mutableStateOf(false) }
                     val auth = FirebaseAuth.getInstance()
@@ -311,12 +318,24 @@ fun LoginScreen(
                         }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = rememberMe.value,
+                            onCheckedChange = { rememberMe.value = it }
+                        )
+                        Text(text = "Remember me", color = Color(0xFF475569), fontSize = 14.sp)
+                    }
+
                     if (errorMsg.value.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(text = errorMsg.value, color = Color.Red, fontSize = 12.sp)
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
                             errorMsg.value = ""
@@ -329,6 +348,19 @@ fun LoginScreen(
                                         .addOnCompleteListener { task ->
                                             isLoading.value = false
                                             if (task.isSuccessful) {
+                                                if (rememberMe.value) {
+                                                    sharedPrefs.edit()
+                                                        .putBoolean("remember_me", true)
+                                                        .putString("email", email.value)
+                                                        .putString("password", password.value)
+                                                        .apply()
+                                                } else {
+                                                    sharedPrefs.edit()
+                                                        .putBoolean("remember_me", false)
+                                                        .remove("email")
+                                                        .remove("password")
+                                                        .apply()
+                                                }
                                                 Log.d("Login", "User logged in: ${auth.currentUser?.uid}")
                                                 onAuthSuccess()
                                             } else {

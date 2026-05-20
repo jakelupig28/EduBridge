@@ -60,10 +60,10 @@ data class Course(
 )
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}, onSelectTab: (String) -> Unit = {}) {
+fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}, onSelectTab: (String) -> Unit = {}, onCategorySelect: (String) -> Unit = {}) {
     val featured = listOf(
-        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, imageRes = R.drawable.wiring, image = Icons.Outlined.ElectricalServices),
-        Course("Automotive Diagnostics", "Automotive", "Intermediate", "24 Hours", rating = 4.9, imageRes = R.drawable.automotive, image = Icons.Outlined.DirectionsCar)
+        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, imageRes = R.drawable.pinoy_wiring_basics, image = Icons.Outlined.ElectricalServices),
+        Course("Automotive Diagnostics", "Automotive", "Intermediate", "24 Hours", rating = 4.9, imageRes = R.drawable.pinoy_automotive, image = Icons.Outlined.DirectionsCar)
     )
 
     Column(modifier = modifier.fillMaxSize().background(color = androidx.compose.material3.MaterialTheme.colorScheme.background)) {
@@ -115,7 +115,7 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.plumbing),
+                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.pinoy_plumbing),
                                 contentDescription = "Plumbing",
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
@@ -130,8 +130,8 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                         Spacer(modifier = Modifier.height(8.dp))
                         // progress row
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = "Module 3: Shielding Gases", color = Color.Gray, fontSize = 13.sp)
-                            Text(text = "65%", color = Color.Gray, fontSize = 13.sp)
+                            Text(text = "Module 1: Introduction", color = Color.Gray, fontSize = 13.sp)
+                            Text(text = "0%", color = Color.Gray, fontSize = 13.sp)
                         }
                         Spacer(modifier = Modifier.height(6.dp))
                         Box(modifier = Modifier
@@ -139,15 +139,11 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color(0xFFE2E8F0))) {
-                            Box(modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(0.65f)
-                                .background(BrandGreen))
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = {}, modifier = Modifier.fillMaxWidth().height(44.dp), shape = RoundedCornerShape(8.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = BrandGreen)) {
-                            Text(text = "Resume", fontWeight = FontWeight.Medium)
+                            Text(text = "Start", fontWeight = FontWeight.Medium)
                         }
                     }
                 }
@@ -159,12 +155,12 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                 // categories grid (2x2)
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        CategoryCard("Electrical", Color(0xFFE6F7EF), BrandGreen, Icons.Outlined.ElectricalServices, modifier = Modifier.weight(1f))
-                        CategoryCard("Automotive", Color(0xFFEBF8FF), Color(0xFF3182CE), Icons.Outlined.DirectionsCar, modifier = Modifier.weight(1f))
+                        CategoryCard("Electrical", 3, Color(0xFFE6F7EF), BrandGreen, Icons.Outlined.ElectricalServices, modifier = Modifier.weight(1f).clickable { onCategorySelect("Electrical") })
+                        CategoryCard("Automotive", 2, Color(0xFFEBF8FF), Color(0xFF3182CE), Icons.Outlined.DirectionsCar, modifier = Modifier.weight(1f).clickable { onCategorySelect("Automotive") })
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        CategoryCard("Welding", Color(0xFFFFF5F5), Color(0xFFE53E3E), Icons.Outlined.Build, modifier = Modifier.weight(1f))
-                        CategoryCard("ICT", Color(0xFFE6FFFA), Color(0xFF319795), Icons.Outlined.LaptopMac, modifier = Modifier.weight(1f))
+                        CategoryCard("Welding", 3, Color(0xFFFFF5F5), Color(0xFFE53E3E), Icons.Outlined.Build, modifier = Modifier.weight(1f).clickable { onCategorySelect("Welding") })
+                        CategoryCard("ICT", 4, Color(0xFFE6FFFA), Color(0xFF319795), Icons.Outlined.LaptopMac, modifier = Modifier.weight(1f).clickable { onCategorySelect("ICT") })
                     }
                 }
             }
@@ -188,9 +184,9 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
 }
 
 @Composable
-fun CategoryCard(name: String, bgColor: Color, iconColor: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
+fun CategoryCard(name: String, coursesCount: Int, bgColor: Color, iconColor: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
     Card(modifier = modifier
-        .height(100.dp),
+        .height(120.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -204,6 +200,8 @@ fun CategoryCard(name: String, bgColor: Color, iconColor: Color, icon: androidx.
             }
             Spacer(modifier = Modifier.height(12.dp))
             Text(text = name, color = Color.Black, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "$coursesCount Courses", color = Color.Gray, fontSize = 12.sp)
         }
     }
 }
@@ -331,20 +329,48 @@ fun CourseDetailScreen(course: Course, modifier: Modifier = Modifier, onStartQui
                 Text(text = "What you'll learn", fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(text = "• Design fault-tolerant microservice architectures", color = Color.Gray)
-                    Text(text = "• Deploy production-ready Kubernetes clusters", color = Color.Gray)
-                    Text(text = "• Implement service meshes with Istio", color = Color.Gray)
-                    Text(text = "• Establish robust CI/CD pipelines", color = Color.Gray)
+                    Text(text = "• Safety standards and equipment usage", color = Color.Gray)
+                    Text(text = "• Core theoretical principles of the field", color = Color.Gray)
+                    Text(text = "• Practical implementation and techniques", color = Color.Gray)
+                    Text(text = "• Testing, troubleshooting, and diagnosing issues", color = Color.Gray)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Course Curriculum", fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
-                ModuleCard("MODULE 1", "Foundations of Distributed Systems", "45 mins", onClick = { onOpenLesson("Foundations of Distributed Systems") })
-                Spacer(modifier = Modifier.height(8.dp))
-                ModuleCard("MODULE 2", "Docker & Containerization Deep Dive", "1.5 hrs", onClick = { onOpenLesson("Docker & Containerization Deep Dive") })
-                Spacer(modifier = Modifier.height(8.dp))
-                ModuleCard("MODULE 3", "Kubernetes Architecture & Core Concepts", "2 hrs", onClick = { onOpenLesson("Kubernetes Architecture & Core Concepts") })
+
+                val coursesModules = when(course.category) {
+                    "Electrical" -> listOf(
+                        "MODULE 1" to "Safety and Tools",
+                        "MODULE 2" to "Circuit Design",
+                        "MODULE 3" to "Installation & Maintenance"
+                    )
+                    "Automotive" -> listOf(
+                        "MODULE 1" to "Engine Basics",
+                        "MODULE 2" to "Diagnostics & Troubleshooting",
+                        "MODULE 3" to "Hybrid and EV Systems"
+                    )
+                    "Welding" -> listOf(
+                        "MODULE 1" to "Welding Safety",
+                        "MODULE 2" to "TIG/MIG Fundamentals",
+                        "MODULE 3" to "Structural Integrity"
+                    )
+                    "Carpentry" -> listOf(
+                        "MODULE 1" to "Wood Properties & Tools",
+                        "MODULE 2" to "Framing Basics",
+                        "MODULE 3" to "Finishing Techniques"
+                    )
+                    else -> listOf(
+                        "MODULE 1" to "Networking Basics",
+                        "MODULE 2" to "Foundations of Distributed Systems",
+                        "MODULE 3" to "Server Architectures"
+                    )
+                }
+
+                coursesModules.forEach { (tag, title) ->
+                    ModuleCard(tag, title, "45 mins", onClick = { onOpenLesson(title) })
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
 
