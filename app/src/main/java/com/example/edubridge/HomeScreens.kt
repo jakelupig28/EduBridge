@@ -60,11 +60,27 @@ data class Course(
 )
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}, onSelectTab: (String) -> Unit = {}, onCategorySelect: (String) -> Unit = {}) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onOpenCourse: (Course) -> Unit = {},
+    onSelectTab: (String) -> Unit = {},
+    onCategorySelect: (String) -> Unit = {},
+    courseProgress: Map<String, Int> = emptyMap()
+) {
     val featured = listOf(
-        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, imageRes = R.drawable.pinoy_wiring_basics, image = Icons.Outlined.ElectricalServices),
-        Course("Automotive Diagnostics", "Automotive", "Intermediate", "24 Hours", rating = 4.9, imageRes = R.drawable.pinoy_automotive, image = Icons.Outlined.DirectionsCar)
+        Course("Residential Wiring Basics", "Electrical", "Beginner", "24 Hours", rating = 4.8, imageRes = R.drawable.residential_wiring_basics, image = Icons.Outlined.ElectricalServices),
+        Course("Automotive Diagnostics", "Automotive", "Intermediate", "36 Hours", rating = 4.9, imageRes = R.drawable.automotive, image = Icons.Outlined.DirectionsCar)
     )
+
+    // Find the most recent or in-progress course
+    val inProgressCourse = courseProgress.entries.firstOrNull { it.value < 100 }?.key
+        ?: courseProgress.keys.firstOrNull()
+    
+    // Find matching course object (mocking it if not found in featured)
+    val continueCourse = featured.find { it.title == inProgressCourse } 
+        ?: featured.first() // Fallback to first featured for now
+    
+    val currentProgress = courseProgress[continueCourse.title] ?: 0
 
     Column(modifier = modifier.fillMaxSize().background(color = androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
@@ -75,7 +91,7 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Text(text = "Welcome back, Alex!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
+                Text(text = "Welcome back!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "Let's continue mastering your skills.", color = Color.Gray)
                 Spacer(modifier = Modifier.height(12.dp))
@@ -114,24 +130,26 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                             .background(Color(0xFFEFF8F4)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Image(
-                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.pinoy_plumbing),
-                                contentDescription = "Plumbing",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            if (continueCourse.imageRes != null) {
+                                Image(
+                                    painter = androidx.compose.ui.res.painterResource(id = continueCourse.imageRes!!),
+                                    contentDescription = continueCourse.title,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Box(modifier = Modifier.background(Color(0xFFE1E8FA), RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
-                            Text(text = "Plumbing", color = Color(0xFF2C5282), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                            Text(text = continueCourse.category, color = Color(0xFF2C5282), fontSize = 12.sp, fontWeight = FontWeight.Medium)
                         }
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text(text = "Pipe Fitting Essentials", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                        Text(text = continueCourse.title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                         Spacer(modifier = Modifier.height(8.dp))
                         // progress row
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = "Module 1: Introduction", color = Color.Gray, fontSize = 13.sp)
-                            Text(text = "0%", color = Color.Gray, fontSize = 13.sp)
+                            Text(text = if (currentProgress == 100) "Completed" else "In Progress", color = Color.Gray, fontSize = 13.sp)
+                            Text(text = "$currentProgress%", color = Color.Gray, fontSize = 13.sp)
                         }
                         Spacer(modifier = Modifier.height(6.dp))
                         Box(modifier = Modifier
@@ -139,11 +157,15 @@ fun HomeScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                             .background(Color(0xFFE2E8F0))) {
+                            Box(modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(currentProgress / 100f)
+                                .background(BrandGreen))
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = {}, modifier = Modifier.fillMaxWidth().height(44.dp), shape = RoundedCornerShape(8.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = BrandGreen)) {
-                            Text(text = "Start", fontWeight = FontWeight.Medium)
+                        Button(onClick = { onOpenCourse(continueCourse) }, modifier = Modifier.fillMaxWidth().height(44.dp), shape = RoundedCornerShape(8.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = BrandGreen)) {
+                            Text(text = if (currentProgress == 100) "Review" else "Continue", fontWeight = FontWeight.Medium)
                         }
                     }
                 }

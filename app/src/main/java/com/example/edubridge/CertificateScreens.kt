@@ -128,7 +128,11 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = {}) {
+fun CertificateDetailScreen(modifier: Modifier = Modifier, userFullName: String = "Student", onBack: () -> Unit = {}) {
+    val nameParts = userFullName.split(" ")
+    val firstName = nameParts.firstOrNull() ?: "Student"
+    val lastName = if (nameParts.size > 1) nameParts.last() else ""
+
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
@@ -185,8 +189,10 @@ fun CertificateDetailScreen(modifier: Modifier = Modifier, onBack: () -> Unit = 
                                 Text(text = "THIS IS PROUDLY", color = Color.DarkGray, fontSize = 12.sp, letterSpacing = 1.sp)
                                 Text(text = "PRESENTED TO", color = Color.DarkGray, fontSize = 12.sp, letterSpacing = 1.sp)
                                 Spacer(modifier = Modifier.height(24.dp))
-                                Text(text = "Alex", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
-                                Text(text = "Rivera", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
+                                Text(text = firstName, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
+                                if (lastName.isNotEmpty()) {
+                                    Text(text = lastName, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = BrandGreen)
+                                }
                                 Spacer(modifier = Modifier.height(24.dp))
                                 Text(
                                     text = "for successfully completing the rigorous academic requirements and demonstrating mastery in",

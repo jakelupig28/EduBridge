@@ -43,6 +43,62 @@ data class Question(
     val correctIndex: Int
 )
 
+object QuizRepository {
+    fun getQuestionsForCategory(category: String): List<Question> {
+        return when (category) {
+            "Electrical" -> (1..30).map { i ->
+                Question(
+                    "Electrical Question $i: What is the standard unit of electrical resistance?",
+                    listOf("Volt", "Ampere", "Ohm", "Watt"),
+                    2
+                )
+            }
+            "Automotive" -> (1..30).map { i ->
+                Question(
+                    "Automotive Question $i: Which component is responsible for spark ignition?",
+                    listOf("Alternator", "Spark Plug", "Fuel Pump", "Radiator"),
+                    1
+                )
+            }
+            "Welding" -> (1..30).map { i ->
+                Question(
+                    "Welding Question $i: What gas is commonly used in TIG welding?",
+                    listOf("Oxygen", "Argon", "Acetylene", "Nitrogen"),
+                    1
+                )
+            }
+            "ICT" -> (1..30).map { i ->
+                Question(
+                    "ICT Question $i: What does CPU stand for?",
+                    listOf("Central Processing Unit", "Computer Personal Unit", "Central Power Utility", "Control Processing Unit"),
+                    0
+                )
+            }
+            "Plumbing" -> (1..30).map { i ->
+                Question(
+                    "Plumbing Question $i: Which tool is used to clear a clogged drain?",
+                    listOf("Wrench", "Plunger", "Hacksaw", "Screwdriver"),
+                    1
+                )
+            }
+            "Carpentry" -> (1..30).map { i ->
+                Question(
+                    "Carpentry Question $i: Which type of wood is generally considered a hardwood?",
+                    listOf("Pine", "Cedar", "Oak", "Spruce"),
+                    2
+                )
+            }
+            else -> (1..30).map { i ->
+                Question(
+                    "General Question $i: Safety first means?",
+                    listOf("Work fast", "Wear PPE", "Ignore rules", "Sleep"),
+                    1
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun QuizScreen(
     modifier: Modifier = Modifier,

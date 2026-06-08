@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
 fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onThemeChange: (Boolean) -> Unit = {}) {
     val isLoginScreen = remember { mutableStateOf(true) }
     val loggedIn = remember { mutableStateOf(false) }
+    val userFullName = remember { mutableStateOf("Student") }
     val selectedCourse = remember { mutableStateOf<Course?>(null) }
     val quizActive = remember { mutableStateOf(false) }
     val quizResultPercent = remember { mutableStateOf<Int?>(null) }
@@ -51,24 +52,27 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
     val showSettings = remember { mutableStateOf(false) }
     val selectedLesson = remember { mutableStateOf<String?>(null) }
     val selectedCategory = remember { mutableStateOf<String?>(null) }
+    val courseProgress = remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
 
-    val sampleQuestions = listOf(
-        com.example.edubridge.Question(
-            "When identifying potential hazards in a high-voltage environment, which of the following is the FIRST step according to occupational safety guidelines?",
-            listOf(
-                "Isolate the power source completely.",
-                "Conduct a thorough site and equipment assessment.",
-                "Equip appropriate personal protective equipment (PPE).",
-                "Notify emergency services of intent to work."
-            ),
-            1
-        ),
-        com.example.edubridge.Question(
-            "Which of the following PPE is essential when working with energized equipment?",
-            listOf("Insulated gloves", "Cloth gloves", "Disposable gloves", "No gloves"),
-            0
-        )
-    )
+    val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+    val database = com.google.firebase.database.FirebaseDatabase.getInstance().reference
+
+    // Fetch user name and progress on login
+    if (loggedIn.value && auth.currentUser != null) {
+        val uid = auth.currentUser!!.uid
+        database.child("users").child(uid).child("fullName").get().addOnSuccessListener {
+            it.value?.let { name -> userFullName.value = name.toString() }
+        }
+        database.child("progress").child(uid).get().addOnSuccessListener { snapshot ->
+            val progressMap = mutableMapOf<String, Int>()
+            snapshot.children.forEach { child ->
+                progressMap[child.key!!] = (child.value as Long).toInt()
+            }
+            courseProgress.value = progressMap
+        }
+    }
+
+    val sampleQuestions = com.example.edubridge.QuizRepository.getQuestionsForCategory(selectedCourse.value?.category ?: "Electrical")
 
     Column(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
@@ -100,7 +104,7 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 }
 
                 selectedCertificate.value != null -> {
-                    CertificateDetailScreen(modifier = Modifier.fillMaxSize(), onBack = { selectedCertificate.value = null })
+                    CertificateDetailScreen(modifier = Modifier.fillMaxSize(), userFullName = userFullName.value, onBack = { selectedCertificate.value = null })
                 }
 
                 quizActive.value -> {
@@ -110,6 +114,15 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                         quizResultCorrect.value = correct
                         quizResultTotal.value = total
                         quizResultTime.value = timeTaken
+                        
+                        // Update progress in database if passed
+                        if (quizResultPercent.value!! >= 75) {
+                             selectedCourse.value?.let { course ->
+                                 auth.currentUser?.uid?.let { uid ->
+                                     database.child("progress").child(uid).child(course.title).setValue(100)
+                                 }
+                             }
+                        }
                     }
                 }
 
@@ -154,7 +167,8 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                     HomeScreen(
                         modifier = Modifier.fillMaxSize(),
                         onOpenCourse = { course -> selectedCourse.value = course },
-                        onCategorySelect = { category -> selectedCategory.value = category }
+                        onCategorySelect = { category -> selectedCategory.value = category },
+                        courseProgress = courseProgress.value
                     )
                 }
 
@@ -163,7 +177,7 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 }
 
                 currentScreen.value == "Progress" -> {
-                    ProgressScreen(modifier = Modifier.fillMaxSize())
+                    ProgressScreen(modifier = Modifier.fillMaxSize(), courseProgress = courseProgress.value)
                 }
 
                 currentScreen.value == "Certificates" -> {

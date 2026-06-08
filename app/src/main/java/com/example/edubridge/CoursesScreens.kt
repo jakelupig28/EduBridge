@@ -25,9 +25,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 @Composable
 fun CourseCatalogScreen(modifier: Modifier = Modifier, onOpenCourse: (Course) -> Unit = {}) {
     val courses = listOf(
-        Course("Advanced Commercial Wiring Techniques", "Electrical", "Advanced", "40 Hours", progress = 45, imageRes = R.drawable.pinoy_wiring_basics),
-        Course("Modern EV Diagnostics & Repair", "Automotive", "Intermediate", "60 Hours", progress = 0, imageRes = R.drawable.pinoy_automotive),
-        Course("Residential Pipe Systems Fundamentals", "Plumbing", "Beginner", "32 Hours", progress = 0, imageRes = R.drawable.pinoy_plumbing),
+        Course("Advanced Commercial Wiring Techniques", "Electrical", "Advanced", "40 Hours", progress = 45, imageRes = R.drawable.advance_commercial_wiring),
+        Course("Modern EV Diagnostics & Repair", "Automotive", "Intermediate", "60 Hours", progress = 0, imageRes = R.drawable.modern_ev_diagnostic_and_repair),
+        Course("Residential Pipe Systems Fundamentals", "Plumbing", "Beginner", "32 Hours", progress = 0, imageRes = R.drawable.plumbing),
         Course("Structural Framing Mastery", "Carpentry", "Advanced", "48 Hours", progress = 0, imageRes = R.drawable.pinoy_structural_framing_mastery)
     )
 
@@ -123,22 +123,85 @@ fun getLesson(title: String): LessonContent {
         "Safety and Tools" -> LessonContent(
             title = title,
             coreConcept = "Electrical Safety First",
-            body = "1. Always de-energize circuits before working on them.\n2. Use tested, insulated tools.\n3. Wear appropriate personal protective equipment (PPE)."
+            body = """
+                Electrical safety is paramount in any technical field. Always follow these core rules:
+                
+                1. Lockout/Tagout (LOTO): Ensure all power sources are disconnected and locked before beginning work.
+                2. Test Before You Touch: Use a multimeter or voltage tester to confirm that a circuit is truly de-energized.
+                3. Use Insulated Tools: Only use tools rated for the voltage you are working with (typically 1000V for residential/commercial).
+                4. Wear Proper PPE: This includes arc-flash rated clothing, insulated gloves, and safety glasses.
+                
+                Remember, electricity is invisible and unforgiving. Never skip safety protocols to save time.
+            """.trimIndent()
         )
         "Circuit Design" -> LessonContent(
             title = title,
             coreConcept = "Series & Parallel",
-            body = "In a series circuit, components are connected in a single path, so the same current flows through all of them. In a parallel circuit, paths branch out, so voltage remains the same across branches but current differs."
+            body = """
+                Understanding the fundamental difference between series and parallel circuits is essential for any electrical work.
+                
+                Series Circuits:
+                - Components are connected end-to-end.
+                - The same current (I) flows through all components.
+                - If one component fails, the entire circuit is broken.
+                - Total resistance is the sum of all individual resistances.
+                
+                Parallel Circuits:
+                - Components are connected across the same two points.
+                - Voltage (V) remains constant across all branches.
+                - Current splits between branches based on their individual resistance.
+                - If one branch fails, the others continue to operate. This is how most building wiring is designed.
+            """.trimIndent()
         )
         "Engine Basics" -> LessonContent(
             title = title,
             coreConcept = "Combustion Cycle",
-            body = "The four steps of the Otto cycle are Intake, Compression, Power, and Exhaust. Understanding this is key to all internal combustion engine repair."
+            body = """
+                The modern internal combustion engine operates on the four-stroke cycle, also known as the Otto cycle.
+                
+                1. Intake: The piston moves down, and the intake valve opens, pulling a fuel-air mixture into the cylinder.
+                2. Compression: The intake valve closes, and the piston moves up, compressing the mixture to increase its energy potential.
+                3. Power: The spark plug ignites the mixture. The resulting explosion forces the piston down, turning the crankshaft.
+                4. Exhaust: The exhaust valve opens, and the piston moves up again to push the spent gases out of the engine.
+                
+                Mastering these steps allows technicians to diagnose performance issues and mechanical failures accurately.
+            """.trimIndent()
+        )
+        "Diagnostics & Troubleshooting" -> LessonContent(
+            title = title,
+            coreConcept = "The Scientific Approach",
+            body = """
+                Effective troubleshooting is a systematic process of elimination. 
+                
+                - Step 1: Verify the concern. Make sure you understand exactly what the symptom is.
+                - Step 2: Visual inspection. Look for obvious signs like loose wires, leaks, or burnt components.
+                - Step 3: Scan for codes. Use an OBD-II scanner to pull trouble codes from the vehicle's computer.
+                - Step 4: Test components. Use multimeters, pressure gauges, or oscilloscopes to verify the operation of specific parts.
+                - Step 5: Root cause analysis. Don't just replace the failed part; understand WHY it failed to prevent a repeat issue.
+            """.trimIndent()
+        )
+        "TIG/MIG Fundamentals" -> LessonContent(
+            title = title,
+            coreConcept = "Gas Shielded Welding",
+            body = """
+                MIG (Metal Inert Gas) and TIG (Tungsten Inert Gas) are the two most common advanced welding processes.
+                
+                MIG Welding:
+                - Uses a continuously feeding wire as an electrode and filler.
+                - Faster and easier for beginners to learn.
+                - Ideal for thicker materials and production work.
+                
+                TIG Welding:
+                - Uses a non-consumable tungsten electrode.
+                - Requires manual addition of filler rod with the other hand.
+                - Provides the highest quality and precision.
+                - Used for exotic metals like aluminum and stainless steel.
+            """.trimIndent()
         )
         else -> LessonContent(
             title = title,
             coreConcept = "Core Principles",
-            body = "This module covers the essential concepts and theories needed to master the practical skills in this category. Make sure to review the video lecture and complete the assigned practical exercises."
+            body = "This module covers the essential concepts and theories needed to master the practical skills in this category. Make sure to review the video lecture and complete the assigned practical exercises. Technical mastery requires both theoretical understanding and hands-on practice."
         )
     }
 }
@@ -190,22 +253,22 @@ fun CategoryDetailScreen(
     onOpenCourse: (Course) -> Unit = {}
 ) {
     val allCourses = listOf(
-        Course("Residential Wiring Basics", "Electrical", "Beginner", "12 Hours", rating = 4.8, imageRes = R.drawable.pinoy_wiring_basics),
-        Course("Advanced Commercial Wiring Techniques", "Electrical", "Advanced", "40 Hours", rating = 4.7),
-        Course("Electrical Grid Maintenance", "Electrical", "Intermediate", "20 Hours", rating = 4.9),
+        Course("Residential Wiring Basics", "Electrical", "Beginner", "24 Hours", rating = 4.8, imageRes = R.drawable.residential_wiring_basics),
+        Course("Advanced Commercial Wiring Techniques", "Electrical", "Advanced", "60 Hours", rating = 4.7, imageRes = R.drawable.advance_commercial_wiring),
+        Course("Electrical Grid Maintenance", "Electrical", "Intermediate", "45 Hours", rating = 4.9, imageRes = R.drawable.electrical_grid_maintenance),
 
-        Course("Automotive Diagnostics", "Automotive", "Intermediate", "24 Hours", rating = 4.9, imageRes = R.drawable.pinoy_automotive),
-        Course("Modern EV Diagnostics & Repair", "Automotive", "Advanced", "60 Hours", rating = 4.9),
-        Course("Engine Overhaul Mastery", "Automotive", "Advanced", "120 Hours", rating = 4.6),
+        Course("Automotive Diagnostics", "Automotive", "Intermediate", "36 Hours", rating = 4.9, imageRes = R.drawable.automotive),
+        Course("Modern EV Diagnostics & Repair", "Automotive", "Advanced", "72 Hours", rating = 4.9, imageRes = R.drawable.modern_ev_diagnostic_and_repair),
+        Course("Engine Overhaul Mastery", "Automotive", "Advanced", "120 Hours", rating = 4.6, imageRes = R.drawable.engine_overhaul_mastery),
 
-        Course("Structural Welding Basics", "Welding", "Beginner", "24 Hours", rating = 4.8),
-        Course("TIG Welding Fundamentals", "Welding", "Intermediate", "32 Hours", rating = 4.7),
-        Course("Pipeline Welding Pro", "Welding", "Advanced", "60 Hours", rating = 4.9),
+        Course("Structural Welding Basics", "Welding", "Beginner", "40 Hours", rating = 4.8, imageRes = R.drawable.structural_welding_basics),
+        Course("TIG Welding Fundamentals", "Welding", "Intermediate", "56 Hours", rating = 4.7, imageRes = R.drawable.tig_welding_fundamentals),
+        Course("Pipeline Welding Pro", "Welding", "Advanced", "80 Hours", rating = 4.9, imageRes = R.drawable.pipeline_welding_pro),
 
-        Course("Network Cable Splicing", "ICT", "Beginner", "16 Hours", rating = 4.5),
-        Course("Fiber Optic Installation", "ICT", "Intermediate", "40 Hours", rating = 4.9),
-        Course("Cloud Native Architecture", "ICT", "Advanced", "48 Hours", rating = 4.8),
-        Course("Server Room Maintenance", "ICT", "Intermediate", "30 Hours", rating = 4.6)
+        Course("Network Cable Splicing", "ICT", "Beginner", "30 Hours", rating = 4.5, imageRes = R.drawable.network_cable_splicing),
+        Course("Fiber Optic Installation", "ICT", "Intermediate", "48 Hours", rating = 4.9, imageRes = R.drawable.fiber_optic_installation),
+        Course("Cloud Native Architecture", "ICT", "Advanced", "64 Hours", rating = 4.8, imageRes = R.drawable.cloud_native_architecture),
+        Course("Server Room Maintenance", "ICT", "Intermediate", "40 Hours", rating = 4.6, imageRes = R.drawable.server_room_maintenance)
     )
 
     val categoryCourses = allCourses.filter { it.category.equals(category, ignoreCase = true) }

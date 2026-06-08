@@ -27,7 +27,10 @@ import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material.icons.outlined.Analytics
 
 @Composable
-fun ProgressScreen(modifier: Modifier = Modifier) {
+fun ProgressScreen(modifier: Modifier = Modifier, courseProgress: Map<String, Int> = emptyMap()) {
+    val totalProgress = if (courseProgress.isEmpty()) 0 else courseProgress.values.average().toInt()
+    val completedCourses = courseProgress.filter { it.value == 100 }.size
+    
     Column(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         TopBrandBar()
         LazyColumn(
@@ -60,16 +63,16 @@ fun ProgressScreen(modifier: Modifier = Modifier) {
                                 drawArc(
                                     color = BrandGreen,
                                     startAngle = -90f,
-                                    sweepAngle = 360f * 0.72f,
+                                    sweepAngle = 360f * (totalProgress / 100f),
                                     useCenter = false,
                                     style = Stroke(width = 10.dp.toPx(), cap = StrokeCap.Round)
                                 )
                             }
-                            Text(text = "72%", fontWeight = FontWeight.ExtraBold, fontSize = 28.sp, color = BrandGreen)
+                            Text(text = "$totalProgress%", fontWeight = FontWeight.ExtraBold, fontSize = 28.sp, color = BrandGreen)
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(
-                            text = "You're making great strides this week.\nKeep up the momentum!",
+                            text = if (totalProgress > 0) "You're making great strides this week.\nKeep up the momentum!" else "Start your journey by enrolling in a course!",
                             color = Color.DarkGray,
                             textAlign = TextAlign.Center,
                             fontSize = 14.sp
@@ -95,12 +98,12 @@ fun ProgressScreen(modifier: Modifier = Modifier) {
                                     Icon(imageVector = Icons.AutoMirrored.Outlined.LibraryBooks, contentDescription = null, tint = Color(0xFF1E40AF), modifier = Modifier.size(16.dp))
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "Lessons", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                                Text(text = "Completed", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                             }
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text(text = "34", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+                            Text(text = "$completedCourses", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = "📈 + 4 this week", fontSize = 10.sp, color = BrandGreen, fontWeight = FontWeight.Bold)
+                            Text(text = "Courses", fontSize = 10.sp, color = BrandGreen, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -118,43 +121,12 @@ fun ProgressScreen(modifier: Modifier = Modifier) {
                                     Icon(imageVector = Icons.Outlined.Analytics, contentDescription = null, tint = BrandGreen, modifier = Modifier.size(16.dp))
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "Avg. Score", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                                Text(text = "Active", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                             }
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text(text = "88%", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+                            Text(text = "${courseProgress.size}", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(text = "Across 12 modules", fontSize = 10.sp, color = Color.Gray)
-                        }
-                    }
-                }
-            }
-
-            item {
-                Text(text = "Weekly Activity", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth().height(160.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF8F4))
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        val heights = listOf(0.4f, 0.6f, 0.9f, 0.7f, 0.5f, 0.3f, 0.15f)
-                        val days = listOf("M", "T", "W", "T", "F", "S", "S")
-
-                        heights.forEachIndexed { index, fraction ->
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Box(modifier = Modifier.width(28.dp).height(100.dp).background(Color(0xFFDEE5E0), RoundedCornerShape(2.dp))) {
-                                    Box(
-                                        modifier = Modifier.fillMaxWidth().fillMaxHeight(fraction).background(if (index == 2) BrandGreen else Color(0xFF0061A6), RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp, bottomStart = 2.dp, bottomEnd = 2.dp)).align(Alignment.BottomCenter)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(text = days[index], fontSize = 10.sp, color = if (index == 2) BrandGreen else Color.DarkGray, fontWeight = if (index == 2) FontWeight.Bold else FontWeight.Normal)
-                            }
+                            Text(text = "Courses in progress", fontSize = 10.sp, color = Color.Gray)
                         }
                     }
                 }
@@ -163,33 +135,23 @@ fun ProgressScreen(modifier: Modifier = Modifier) {
             item {
                 Text(text = "Enrolled Courses", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-
-                // Advanced Network...
-                EnrolledCourseCard(
-                    title = "Advanced Network...",
-                    module = "Module 4 of 10",
-                    progress = 0.4f,
-                    imageRes = R.drawable.pinoy_wiring_basics
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                // Data Analysis...
-                EnrolledCourseCard(
-                    title = "Data Analysis...",
-                    module = "Module 3 of 3",
-                    progress = 0.86f,
-                    imageRes = R.drawable.pinoy_automotive
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                // Full-Stack Development
-                EnrolledCourseCard(
-                    title = "Full-Stack Development",
-                    module = "Module 2 of 15",
-                    progress = 0.16f,
-                    imageRes = R.drawable.pinoy_plumbing
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
+                
+                if (courseProgress.isEmpty()) {
+                    Text(text = "No courses enrolled yet.", color = Color.Gray, modifier = Modifier.padding(vertical = 16.dp))
+                }
             }
+
+            items(courseProgress.toList()) { (title, progress) ->
+                EnrolledCourseCard(
+                    title = title,
+                    module = if (progress == 100) "Completed" else "In Progress",
+                    progress = progress / 100f,
+                    imageRes = R.drawable.pinoy_wiring_basics // Ideally this would be dynamic too
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            
+            item { Spacer(modifier = Modifier.height(24.dp)) }
         }
     }
 }
