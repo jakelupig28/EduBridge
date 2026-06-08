@@ -59,13 +59,21 @@ data class Certificate(
 )
 
 @Composable
-fun CertificatesScreen(modifier: Modifier = Modifier, onSelect: (Certificate) -> Unit = {}, onSelectTab: (String) -> Unit = {}) {
-    val certificates = listOf(
-        Certificate("Advanced Web Architecture", "Mastery in scalable system design, microservices, and modern frontend frameworks.", "Oct 24, 2023", Icons.Outlined.WorkspacePremium, true),
-        Certificate("UI/UX Design Fundamentals", "Core principles of user-centered design, wireframing, and interactive prototyping.", "Aug 12, 2023", Icons.Outlined.MilitaryTech, false),
-        Certificate("Data Structures & Algorithms", "Comprehensive understanding of algorithmic efficiency and complex data structures.", "May 05, 2023", Icons.Outlined.Verified, false),
-        Certificate("Cloud Infrastructure Basics", "Foundational knowledge of cloud computing, deployment models, and serverless architecture.", "Jan 18, 2023", Icons.Outlined.Stars, false)
-    )
+fun CertificatesScreen(
+    modifier: Modifier = Modifier,
+    completedCourses: List<String> = emptyList(),
+    onSelect: (Certificate) -> Unit = {},
+    onSelectTab: (String) -> Unit = {}
+) {
+    val certificates = completedCourses.map { courseTitle ->
+        Certificate(
+            title = courseTitle,
+            description = "Professional certification demonstrating mastery in $courseTitle technical requirements.",
+            date = "Oct 24, 2023", // Ideally this should be dynamic too
+            icon = Icons.Outlined.WorkspacePremium,
+            isPrimary = true
+        )
+    }
 
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
@@ -78,7 +86,9 @@ fun CertificatesScreen(modifier: Modifier = Modifier, onSelect: (Certificate) ->
                 Text(text = "My Certificates", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Your verified technical skills and achievements. Download or share your certificates to showcase your expertise.",
+                    text = if (certificates.isNotEmpty()) 
+                        "Your verified technical skills and achievements. Download or share your certificates to showcase your expertise."
+                    else "Complete courses and pass final quizzes to earn your technical certifications.",
                     color = Color.DarkGray,
                     fontSize = 14.sp,
                     lineHeight = 20.sp
@@ -86,13 +96,20 @@ fun CertificatesScreen(modifier: Modifier = Modifier, onSelect: (Certificate) ->
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            items(certificates) { cert ->
-                CertificateCard(certificate = cert, onView = { onSelect(cert) })
+            if (certificates.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth().height(200.dp), contentAlignment = Alignment.Center) {
+                        Text(text = "No certificates earned yet.", color = Color.Gray)
+                    }
+                }
+            } else {
+                items(certificates) { cert ->
+                    CertificateCard(certificate = cert, onView = { onSelect(cert) })
+                }
             }
 
             item { Spacer(modifier = Modifier.height(80.dp)) }
         }
-        BottomNavBar(selected = "Certificates", onSelect = onSelectTab)
     }
 }
 

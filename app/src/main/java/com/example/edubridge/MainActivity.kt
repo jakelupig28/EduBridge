@@ -181,12 +181,18 @@ fun AuthHost(modifier: Modifier = Modifier, isDarkMode: Boolean = false, onTheme
                 }
 
                 currentScreen.value == "Certificates" -> {
-                    CertificatesScreen(modifier = Modifier.fillMaxSize(), onSelect = { cert -> selectedCertificate.value = cert }, onSelectTab = { tab -> currentScreen.value = tab })
+                    CertificatesScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        completedCourses = courseProgress.value.filter { it.value == 100 }.keys.toList(),
+                        onSelect = { cert -> selectedCertificate.value = cert },
+                        onSelectTab = { tab -> currentScreen.value = tab }
+                    )
                 }
 
                 currentScreen.value == "Profile" -> {
                     ProfileScreen(
                         modifier = Modifier.fillMaxSize(),
+                        courseProgress = courseProgress.value,
                         onSettings = { showSettings.value = true },
                         onLogout = {
                             loggedIn.value = false

@@ -64,12 +64,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}, onLogout: () -> Unit = {}) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    courseProgress: Map<String, Int> = emptyMap(),
+    onSettings: () -> Unit = {},
+    onLogout: () -> Unit = {}
+) {
     val auth = FirebaseAuth.getInstance()
     val user = auth.currentUser
     
-    var displayName by remember { mutableStateOf(user?.displayName?.takeIf { it.isNotBlank() } ?: "Sarah Jenkins") }
-    val email = user?.email ?: "sarah.jenkins@example.com"
+    var displayName by remember { mutableStateOf(user?.displayName?.takeIf { it.isNotBlank() } ?: "Student") }
+    val email = user?.email ?: ""
 
     LaunchedEffect(user?.uid) {
         user?.uid?.let { uid ->
@@ -81,6 +86,8 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}, on
             }
         }
     }
+
+    val completedCount = courseProgress.filter { it.value == 100 }.size
 
     Column(modifier = modifier.fillMaxSize().background(androidx.compose.material3.MaterialTheme.colorScheme.background)) {
         TopBrandBar()
@@ -99,17 +106,6 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}, on
                         ) {
                             Icon(imageVector = Icons.Outlined.Person, contentDescription = "Profile", modifier = Modifier.size(64.dp), tint = Color.Gray)
                         }
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(CircleShape)
-                                .background(BrandGreen)
-                                .border(2.dp, androidx.compose.material3.MaterialTheme.colorScheme.surface, CircleShape)
-                                .align(Alignment.BottomEnd),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit", tint = androidx.compose.material3.MaterialTheme.colorScheme.surface, modifier = Modifier.size(16.dp))
-                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(text = displayName, fontWeight = FontWeight.Bold, fontSize = 24.sp)
@@ -120,8 +116,8 @@ fun ProfileScreen(modifier: Modifier = Modifier, onSettings: () -> Unit = {}, on
 
             Spacer(modifier = Modifier.height(32.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                StatCard(modifier = Modifier.weight(1f), icon = Icons.Outlined.School, iconTint = Color(0xFF1E40AF), bgTint = Color(0xFFEFF6FF), label = "Courses\nCompleted", value = "12")
-                StatCard(modifier = Modifier.weight(1f), icon = Icons.Outlined.EmojiEvents, iconTint = Color(0xFF991B1B), bgTint = Color(0xFFFEF2F2), label = "Certificates\nEarned", value = "4")
+                StatCard(modifier = Modifier.weight(1f), icon = Icons.Outlined.School, iconTint = Color(0xFF1E40AF), bgTint = Color(0xFFEFF6FF), label = "Courses\nCompleted", value = completedCount.toString())
+                StatCard(modifier = Modifier.weight(1f), icon = Icons.Outlined.EmojiEvents, iconTint = Color(0xFF991B1B), bgTint = Color(0xFFFEF2F2), label = "Certificates\nEarned", value = completedCount.toString())
             }
 
             Spacer(modifier = Modifier.height(32.dp))

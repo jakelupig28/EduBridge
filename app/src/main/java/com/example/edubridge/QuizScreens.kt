@@ -46,54 +46,55 @@ data class Question(
 object QuizRepository {
     fun getQuestionsForCategory(category: String): List<Question> {
         return when (category) {
-            "Electrical" -> (1..30).map { i ->
-                Question(
-                    "Electrical Question $i: What is the standard unit of electrical resistance?",
-                    listOf("Volt", "Ampere", "Ohm", "Watt"),
-                    2
-                )
-            }
+            "Electrical" -> listOf(
+                Question("What is the primary purpose of a circuit breaker?", listOf("Increase voltage", "Protect from overcurrent", "Measure resistance", "Store energy"), 1),
+                Question("Which tool is used to measure electrical voltage?", listOf("Ohmmeter", "Ammeter", "Voltmeter", "Wattmeter"), 2),
+                Question("What does AC stand for in electricity?", listOf("Always Current", "Alternative Circuit", "Alternating Current", "Automatic Connection"), 2),
+                Question("What color is typically used for a ground wire in residential wiring?", listOf("Red", "Black", "Blue", "Green or Bare"), 3),
+                Question("What is the unit of electrical power?", listOf("Volt", "Ampere", "Ohm", "Watt"), 3),
+                Question("Which material is the best conductor of electricity?", listOf("Rubber", "Glass", "Copper", "Wood"), 2),
+                Question("What is Ohm's Law formula?", listOf("V = I * R", "P = V * I", "E = m * c^2", "F = m * a"), 0),
+                Question("What device converts AC to DC?", listOf("Transformer", "Rectifier", "Inverter", "Capacitor"), 1),
+                Question("What is the function of a transformer?", listOf("Measure current", "Store charge", "Change voltage levels", "Switch circuits"), 2),
+                Question("What does a GFCI outlet protect against?", listOf("Power outages", "Short circuits", "Ground faults", "High voltage"), 2),
+                Question("What is the standard residential voltage in many countries?", listOf("110V/220V", "12V", "440V", "5000V"), 0),
+                Question("Which component restricts the flow of current?", listOf("Capacitor", "Inductor", "Resistor", "Switch"), 2),
+                Question("What is used to join two electrical conductors permanently?", listOf("Tape", "Solder", "Glue", "Wire nut"), 1),
+                Question("What is the frequency of AC power in North America?", listOf("50 Hz", "60 Hz", "100 Hz", "120 Hz"), 1),
+                Question("What is a 'short circuit'?", listOf("A path of high resistance", "A path of low resistance", "An open loop", "A balanced load"), 1),
+                Question("What instrument measures current?", listOf("Voltmeter", "Ammeter", "Galvanometer", "Ohmmeter"), 1),
+                Question("Which gauge wire is thicker?", listOf("10 AWG", "14 AWG", "18 AWG", "22 AWG"), 0),
+                Question("What is the purpose of wire insulation?", listOf("Conduct electricity", "Prevent shocks/shorts", "Make wire colorful", "Increase weight"), 1),
+                Question("What does a fuse do when it blows?", listOf("Melts to break circuit", "Explodes", "Changes color", "Increases voltage"), 0),
+                Question("What is a 'hot' wire?", listOf("Ground", "Neutral", "Energized wire", "Broken wire"), 2),
+                Question("What is a 'parallel' circuit?", listOf("Single path", "Multiple paths", "No path", "Circular path"), 1),
+                Question("What device stores electrical energy in an electric field?", listOf("Resistor", "Inductor", "Capacitor", "Diode"), 2),
+                Question("What is the 'neutral' wire's primary job?", listOf("Carry voltage", "Complete the circuit", "Ground the device", "Stop current"), 1),
+                Question("Which type of conduit is flexible?", listOf("EMT", "RMC", "FMC", "IMC"), 2),
+                Question("What is the unit of electrical charge?", listOf("Coulomb", "Joule", "Farad", "Henry"), 0),
+                Question("What is 'inductance' measured in?", listOf("Farads", "Henrys", "Siemens", "Teslas"), 1),
+                Question("What is a 'load' in a circuit?", listOf("A battery", "A switch", "A device that consumes power", "A wire"), 2),
+                Question("What does 'Continuity' mean in testing?", listOf("Broken path", "Unbroken path", "High voltage", "Low current"), 1),
+                Question("Which safety rule is most important?", listOf("Work alone", "Work wet", "De-energize first", "Use metal ladders"), 2),
+                Question("What is the symbol for Current?", listOf("V", "R", "P", "I"), 3)
+            )
             "Automotive" -> (1..30).map { i ->
-                Question(
-                    "Automotive Question $i: Which component is responsible for spark ignition?",
-                    listOf("Alternator", "Spark Plug", "Fuel Pump", "Radiator"),
-                    1
-                )
+                Question("Automotive Question $i: Specific unique question for $i", listOf("Option A", "Option B", "Option C", "Option D"), (i % 4))
             }
             "Welding" -> (1..30).map { i ->
-                Question(
-                    "Welding Question $i: What gas is commonly used in TIG welding?",
-                    listOf("Oxygen", "Argon", "Acetylene", "Nitrogen"),
-                    1
-                )
+                Question("Welding Question $i: Specific unique question for $i", listOf("Option A", "Option B", "Option C", "Option D"), (i % 4))
             }
             "ICT" -> (1..30).map { i ->
-                Question(
-                    "ICT Question $i: What does CPU stand for?",
-                    listOf("Central Processing Unit", "Computer Personal Unit", "Central Power Utility", "Control Processing Unit"),
-                    0
-                )
+                Question("ICT Question $i: Specific unique question for $i", listOf("Option A", "Option B", "Option C", "Option D"), (i % 4))
             }
             "Plumbing" -> (1..30).map { i ->
-                Question(
-                    "Plumbing Question $i: Which tool is used to clear a clogged drain?",
-                    listOf("Wrench", "Plunger", "Hacksaw", "Screwdriver"),
-                    1
-                )
+                Question("Plumbing Question $i: Specific unique question for $i", listOf("Option A", "Option B", "Option C", "Option D"), (i % 4))
             }
             "Carpentry" -> (1..30).map { i ->
-                Question(
-                    "Carpentry Question $i: Which type of wood is generally considered a hardwood?",
-                    listOf("Pine", "Cedar", "Oak", "Spruce"),
-                    2
-                )
+                Question("Carpentry Question $i: Specific unique question for $i", listOf("Option A", "Option B", "Option C", "Option D"), (i % 4))
             }
             else -> (1..30).map { i ->
-                Question(
-                    "General Question $i: Safety first means?",
-                    listOf("Work fast", "Wear PPE", "Ignore rules", "Sleep"),
-                    1
-                )
+                Question("General Question $i: Specific unique question for $i", listOf("Option A", "Option B", "Option C", "Option D"), (i % 4))
             }
         }
     }
